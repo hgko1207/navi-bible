@@ -1,0 +1,162 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { readings } from "@/data/readings";
+import { useProgress } from "@/hooks/useProgress";
+import {
+  getReadingHistory,
+  completeCurrentRound,
+  syncRoundProgress,
+} from "@/lib/storage";
+import { ReadingHistory } from "@/lib/types";
+import ProgressBar from "@/components/ProgressBar";
+import ReadingHistoryCard from "@/components/ReadingHistoryCard";
+
+export default function ProgressPage() {
+  const { progress } = useProgress();
+  const [history, setHistory] = useState<ReadingHistory | null>(null);
+
+  useEffect(() => {
+    syncRoundProgress();
+    setHistory(getReadingHistory());
+  }, [progress.completedDays.length]);
+
+  const totalDays = readings.length;
+  const completedCount = progress.completedDays.length;
+
+  const oldTestament = readings.filter((r) => r.testament === "구약");
+  const newTestament = readings.filter((r) => r.testament === "신약");
+
+  const completedOT = oldTestament.filter((r) =>
+    progress.completedDays.includes(r.day)
+  ).length;
+  const completedNT = newTestament.filter((r) =>
+    progress.completedDays.includes(r.day)
+  ).length;
+
+  const percent =
+    totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
+
+  const handleCompleteRound = () => {
+    if (confirm("축하합니다! 완독을 완료하고 새 독서를 시작하시겠습니까?")) {
+      const updated = completeCurrentRound(totalDays);
+      setHistory(updated);
+      window.location.reload();
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* 전체 진도 히어로 카드 */}
+      <div className="relative overflow-hidden rounded-[28px] p-[1px]">
+        <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500" />
+        <div className="relative overflow-hidden rounded-[27px] bg-gradient-to-br from-amber-500 via-amber-600 to-orange-700 p-6 text-white">
+          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br from-white/10 to-transparent" />
+          <div className="absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-gradient-to-tr from-orange-900/30 to-transparent" />
+          <div className="absolute right-8 top-8 h-16 w-16 rounded-full border border-white/10" />
+
+          <div className="relative">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-100/80">
+              {history ? `${history.currentRound}독 진행률` : "1독 진행률"}
+            </p>
+            <div className="mt-3 flex items-end gap-1">
+              <span className="text-[56px] font-extrabold leading-none tracking-tight">
+                {percent}
+              </span>
+              <span className="mb-2 text-2xl font-semibold text-amber-100">%</span>
+            </div>
+            <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/20 backdrop-blur-sm">
+              <div
+                className="h-full rounded-full bg-white transition-all duration-700 ease-out"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+            <p className="mt-2.5 text-[13px] font-medium text-amber-100/90">
+              {completedCount} / {totalDays}일 완료
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 구약/신약 상세 */}
+      <div className="card-glass space-y-4 rounded-2xl p-5">
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+          상세 진도
+        </h3>
+        <ProgressBar
+          current={completedOT}
+          total={oldTestament.length}
+          label="구약"
+          color="amber"
+        />
+        {newTestament.length > 0 && (
+          <ProgressBar
+            current={completedNT}
+            total={newTestament.length}
+            label="신약"
+            color="blue"
+          />
+        )}
+      </div>
+
+      {/* 완료된 일차 */}
+      <div className="card-glass rounded-2xl p-5">
+        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+          완료한 말씀
+        </h3>
+        {completedCount === 0 ? (
+          <div className="py-8 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-stone-50/80">
+              <svg viewBox="0 0 24 24" className="h-8 w-8 text-stone-300" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <p className="mt-3 text-sm font-medium text-stone-500">
+              아직 완료한 말씀이 없습니다
+            </p>
+            <p className="mt-1 text-xs text-stone-400">
+              오늘의 말씀부터 시작해보세요!
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {progress.completedDays
+              .sort((a, b) => a - b)
+              .map((day) => {
+                const r = readings.find((rd) => rd.day === day);
+                return (
+                  <span
+                    key={day}
+                    className="inline-flex items-center gap-1 rounded-lg bg-emerald-50/80 px-2.5 py-1.5 text-xs font-semibold text-emerald-600"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                    </svg>
+                    {day}일차
+                    {r && (
+                      <span className="text-emerald-400">{r.weekday}</span>
+                    )}
+                  </span>
+                );
+              })}
+          </div>
+        )}
+      </div>
+
+      {/* 독서 기록 (1독/2독/3독) */}
+      {history && (
+        <ReadingHistoryCard rounds={history.rounds} totalDays={totalDays} />
+      )}
+
+      {/* 완독 처리 버튼 — 100% 달성 시에만 표시 */}
+      {completedCount >= totalDays && totalDays > 0 && (
+        <button
+          onClick={handleCompleteRound}
+          className="w-full rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 py-4 text-sm font-bold text-white shadow-lg shadow-amber-200/40 transition-all hover:shadow-xl active:scale-[0.98]"
+        >
+          🎉 완독! 다음 독서 시작하기
+        </button>
+      )}
+    </div>
+  );
+}

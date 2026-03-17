@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#d97706"/>
+  <text x="256" y="200" text-anchor="middle" fill="white" font-size="120" font-weight="bold" font-family="serif">✝</text>
+  <text x="256" y="340" text-anchor="middle" fill="white" font-size="72" font-weight="bold" font-family="sans-serif">내비</text>
+  <text x="256" y="420" text-anchor="middle" fill="#fef3c7" font-size="48" font-family="sans-serif">성경읽기</text>
+</svg>

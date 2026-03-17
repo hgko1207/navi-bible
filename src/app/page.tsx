@@ -9,16 +9,14 @@ import KeyPoints from "@/components/KeyPoints";
 import CheckButton from "@/components/CheckButton";
 import TTSPlayer from "@/components/TTSPlayer";
 
-function getTodayReading() {
-  const dayOfWeek = new Date().getDay();
-  const weekdayIndex = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek : 5;
-  const readingIndex = Math.min(weekdayIndex - 1, readings.length - 1);
-  return readings[readingIndex];
+function getNextReading(completedDays: number[]) {
+  const unread = readings.find((r) => !completedDays.includes(r.day));
+  return unread ?? readings[readings.length - 1];
 }
 
 export default function HomePage() {
   const { isCompleted, toggle, progress } = useProgress();
-  const reading = getTodayReading();
+  const reading = getNextReading(progress.completedDays);
   const completedCount = progress.completedDays.length;
   const totalDays = readings.length;
 
@@ -45,7 +43,7 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 backdrop-blur-sm">
               <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400/50" />
               <span className="text-[11px] font-semibold tracking-wide text-white/90">
-                오늘의 말씀
+                이어서 읽기
               </span>
             </div>
 

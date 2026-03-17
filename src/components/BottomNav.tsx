@@ -9,7 +9,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: "/", label: "오늘의 말씀" },
+  { href: "/", label: "이어서 읽기" },
   { href: "/days", label: "전체 목록" },
   { href: "/progress", label: "내 진도" },
 ];

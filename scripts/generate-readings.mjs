@@ -45,14 +45,30 @@ function parseMdFile(content) {
   const headerLine = lines.find((l) => l.startsWith("## ") && /\d+일차/.test(l));
   if (!headerLine) throw new Error("헤더(## N일차)를 찾을 수 없습니다");
 
+  // 포인트 뒤에 범위가 있는 경우와 없는 경우(다음 줄에 있음) 모두 지원
   const headerMatch = headerLine.match(
-    /^## (\S+)\.\s*(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.+)$/
+    /^## (\S+)\.\s*(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.*)$/
   );
   if (!headerMatch) throw new Error(`헤더 파싱 실패: ${headerLine}`);
 
   const weekday = headerMatch[1];
   const day = parseInt(headerMatch[2]);
-  const bibleRange = headerMatch[3].trim();
+  let bibleRange = headerMatch[3].trim();
+
+  // 헤더에 범위가 없으면 다음 비어있지 않은 줄에서 가져옴
+  if (!bibleRange) {
+    const headerIdx = lines.indexOf(headerLine);
+    for (let i = headerIdx + 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line && !line.startsWith("#")) {
+        // ⇒가 포함된 줄이면 키포인트이므로 그 앞 줄이 범위
+        if (line.includes("⇒")) break;
+        bibleRange = line;
+        break;
+      }
+    }
+  }
+  if (!bibleRange) throw new Error(`${day}일차: 성경 범위를 찾을 수 없습니다`);
   const testament = detectTestament(bibleRange);
 
   // Parse key points: lines with ⇒

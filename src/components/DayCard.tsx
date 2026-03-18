@@ -10,17 +10,17 @@ export default function DayCard({ reading, completed }: DayCardProps) {
   return (
     <Link href={`/days/${reading.day}`}>
       <div
-        className={`card-glass flex items-center gap-4 rounded-2xl px-4 py-4.5 shadow-sm transition-all duration-200 active:scale-[0.98] ${
+        className={`flex items-center gap-4 rounded-2xl bg-white px-5 py-5 shadow-sm transition-all duration-200 active:scale-[0.98] ${
           completed
-            ? "border-emerald-200/60 bg-gradient-to-r from-emerald-50/80 to-white/70"
-            : "hover:border-amber-200/60 hover:shadow-md hover:shadow-amber-100/20"
+            ? "border border-emerald-200/80 shadow-emerald-100/40"
+            : "border border-stone-100 hover:shadow-md hover:shadow-amber-100/30"
         }`}
       >
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all ${
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-[15px] font-bold transition-all ${
             completed
-              ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50"
-              : "bg-gradient-to-br from-amber-100 to-amber-50 text-amber-700"
+              ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-200/50"
+              : "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-700"
           }`}
         >
           {completed ? (
@@ -33,25 +33,25 @@ export default function DayCard({ reading, completed }: DayCardProps) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-[14px] font-semibold text-stone-800">
+            <span className="text-[15px] font-bold text-stone-800">
               {reading.weekday}. {reading.day}일차
             </span>
             <span
-              className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+              className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                 reading.testament === "구약"
-                  ? "bg-amber-100/80 text-amber-600"
-                  : "bg-blue-100/80 text-blue-600"
+                  ? "bg-amber-50 text-amber-600"
+                  : "bg-blue-50 text-blue-600"
               }`}
             >
               {reading.testament}
             </span>
           </div>
-          <p className="mt-1 truncate text-[12px] text-stone-400">
+          <p className="mt-1.5 truncate text-[13px] text-stone-400">
             {reading.bibleRange}
           </p>
         </div>
         <svg
-          className={`h-4 w-4 shrink-0 transition-colors ${completed ? "text-emerald-300" : "text-stone-300"}`}
+          className={`h-5 w-5 shrink-0 transition-colors ${completed ? "text-emerald-300" : "text-stone-300"}`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

@@ -51,7 +51,7 @@ export default function DayDetailPage() {
   const nextDay = readings.find((r) => r.day === dayNum + 1);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* 상단 정보 히어로 */}
       <div className="relative overflow-hidden rounded-[28px] p-[1px]">
         <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-stone-500 via-stone-700 to-stone-900" />
@@ -117,7 +117,7 @@ export default function DayDetailPage() {
           <TTSPlayer text={reading.content} />
         </div>
         <div className="px-5 py-4">
-          <div className="space-y-4 text-[15px] leading-[1.85] text-stone-600">
+          <div className="space-y-5 text-[16px] leading-[1.9] text-stone-600">
             {reading.content.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}

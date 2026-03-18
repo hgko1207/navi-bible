@@ -58,7 +58,7 @@ export default function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2 transition-all ${
+              className={`flex flex-1 flex-col items-center gap-1 py-3 transition-all ${
                 active
                   ? "text-amber-600"
                   : "text-stone-400 hover:text-stone-500"
@@ -67,7 +67,7 @@ export default function BottomNav() {
               <div className={`rounded-xl p-1.5 transition-all ${active ? "bg-amber-50" : ""}`}>
                 <Icon active={active} />
               </div>
-              <span className={`text-[10px] leading-none ${active ? "font-bold" : "font-medium"}`}>
+              <span className={`text-[11px] leading-none ${active ? "font-bold" : "font-medium"}`}>
                 {item.label}
               </span>
             </Link>

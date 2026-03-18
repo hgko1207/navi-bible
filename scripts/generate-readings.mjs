@@ -41,8 +41,9 @@ function parseMdFile(content) {
   const lines = content.split("\n");
 
   // Parse header: ## 월. 1일차 내비따라성경읽기 포인트 창1-19장
-  const headerLine = lines.find((l) => l.startsWith("## "));
-  if (!headerLine) throw new Error("헤더(##)를 찾을 수 없습니다");
+  // 일차 정보가 있는 ## 줄을 찾음 (제목줄 "## 내비따라성경읽기 (1년3독)" 건너뜀)
+  const headerLine = lines.find((l) => l.startsWith("## ") && /\d+일차/.test(l));
+  if (!headerLine) throw new Error("헤더(## N일차)를 찾을 수 없습니다");
 
   const headerMatch = headerLine.match(
     /^## (\S+)\.\s*(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.+)$/

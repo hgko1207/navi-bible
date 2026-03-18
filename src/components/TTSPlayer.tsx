@@ -6,10 +6,13 @@ interface TTSPlayerProps {
   text: string;
 }
 
+const TTS_RATES = [1, 1.25, 1.5, 1.75, 2];
+
 export default function TTSPlayer({ text }: TTSPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
+  const [rate, setRate] = useState(1);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
@@ -33,7 +36,7 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ko-KR";
-    utterance.rate = 1;
+    utterance.rate = rate;
     utterance.pitch = 1;
 
     // 한국어 음성 찾기
@@ -58,7 +61,7 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
 
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
-  }, [text, isPaused]);
+  }, [text, isPaused, rate]);
 
   const handlePause = useCallback(() => {
     if (!("speechSynthesis" in window)) return;
@@ -73,6 +76,33 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
     setIsPlaying(false);
     setIsPaused(false);
   }, []);
+
+  const handleRateChange = useCallback(() => {
+    const currentIndex = TTS_RATES.indexOf(rate);
+    const nextIndex = (currentIndex + 1) % TTS_RATES.length;
+    const newRate = TTS_RATES[nextIndex];
+    setRate(newRate);
+
+    // 재생 중이면 새 배속으로 다시 시작
+    if (isPlaying && utteranceRef.current) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "ko-KR";
+      utterance.rate = newRate;
+      utterance.pitch = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const koVoice = voices.find((v) => v.lang.startsWith("ko"));
+      if (koVoice) utterance.voice = koVoice;
+
+      utterance.onstart = () => { setIsPlaying(true); setIsPaused(false); };
+      utterance.onend = () => { setIsPlaying(false); setIsPaused(false); };
+      utterance.onerror = () => { setIsPlaying(false); setIsPaused(false); };
+
+      utteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [rate, isPlaying, text]);
 
   if (!isSupported) return null;
 
@@ -109,6 +139,12 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
           </button>
         </>
       )}
+      <button
+        onClick={handleRateChange}
+        className="rounded-full border border-stone-200 px-2.5 py-1.5 text-[11px] font-semibold text-stone-500 transition-colors hover:border-amber-300 hover:text-amber-700"
+      >
+        {rate}x
+      </button>
     </div>
   );
 }

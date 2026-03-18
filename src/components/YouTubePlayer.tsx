@@ -27,7 +27,7 @@ interface YouTubePlayerProps {
   onComplete?: () => void;
 }
 
-const PLAYBACK_RATES = [0.75, 1, 1.25, 1.5, 1.75, 2];
+const PLAYBACK_RATES = [1, 1.25, 1.5, 1.75, 2];
 
 // YT states
 const PLAYING = 1;
@@ -194,14 +194,33 @@ export default function YouTubePlayer({
     playerRef.current.seekTo(Math.min(dur, time + 30), true);
   }, []);
 
-  const handleRateChange = useCallback(() => {
+  const [showSpeedPanel, setShowSpeedPanel] = useState(false);
+
+  const handleRateDecrease = useCallback(() => {
     if (!playerRef.current) return;
-    const currentRate = playerRef.current.getPlaybackRate();
-    const currentIndex = PLAYBACK_RATES.indexOf(currentRate);
-    const nextIndex = (currentIndex + 1) % PLAYBACK_RATES.length;
-    const newRate = PLAYBACK_RATES[nextIndex];
-    playerRef.current.setPlaybackRate(newRate);
-    setPlaybackRate(newRate);
+    const currentIndex = PLAYBACK_RATES.indexOf(playbackRate);
+    if (currentIndex > 0) {
+      const newRate = PLAYBACK_RATES[currentIndex - 1];
+      playerRef.current.setPlaybackRate(newRate);
+      setPlaybackRate(newRate);
+    }
+  }, [playbackRate]);
+
+  const handleRateIncrease = useCallback(() => {
+    if (!playerRef.current) return;
+    const currentIndex = PLAYBACK_RATES.indexOf(playbackRate);
+    if (currentIndex < PLAYBACK_RATES.length - 1) {
+      const newRate = PLAYBACK_RATES[currentIndex + 1];
+      playerRef.current.setPlaybackRate(newRate);
+      setPlaybackRate(newRate);
+    }
+  }, [playbackRate]);
+
+  const handleRateSelect = useCallback((rate: number) => {
+    if (!playerRef.current) return;
+    playerRef.current.setPlaybackRate(rate);
+    setPlaybackRate(rate);
+    setShowSpeedPanel(false);
   }, []);
 
   const handleProgressClick = useCallback(
@@ -304,13 +323,52 @@ export default function YouTubePlayer({
           </div>
 
           {/* 배속 */}
-          <div className="mt-2 flex justify-center">
-            <button
-              onClick={handleRateChange}
-              className="rounded-full border border-stone-200 px-3 py-1 text-xs font-semibold text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700"
-            >
-              {playbackRate}x 속도
-            </button>
+          <div className="relative mt-2 flex flex-col items-center">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRateDecrease}
+                disabled={PLAYBACK_RATES.indexOf(playbackRate) === 0}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-500"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                  <path d="M19 13H5v-2h14v2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setShowSpeedPanel(!showSpeedPanel)}
+                className="min-w-[72px] rounded-full border border-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700"
+              >
+                {playbackRate}x 속도
+              </button>
+              <button
+                onClick={handleRateIncrease}
+                disabled={PLAYBACK_RATES.indexOf(playbackRate) === PLAYBACK_RATES.length - 1}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-500"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+              </button>
+            </div>
+
+            {/* 속도 선택 패널 */}
+            {showSpeedPanel && (
+              <div className="mt-2 flex flex-wrap justify-center gap-1.5 rounded-xl bg-stone-50 p-2">
+                {PLAYBACK_RATES.map((rate) => (
+                  <button
+                    key={rate}
+                    onClick={() => handleRateSelect(rate)}
+                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                      rate === playbackRate
+                        ? "bg-amber-600 text-white shadow-sm"
+                        : "text-stone-500 hover:bg-stone-200"
+                    }`}
+                  >
+                    {rate}x
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* 이어듣기 안내 */}

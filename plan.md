@@ -362,8 +362,9 @@ getProgressPercent(): number
 - [x] 타입체크 통과 (any/unknown 없음)
 - [x] 빌드 성공
 - [x] 개발 서버 실행 확인 (localhost:3000)
-- [ ] Vercel 배포 (사용자 준비 시)
-- [ ] 실제 URL 접속 테스트
+- [x] GitHub 저장소 생성 (https://github.com/hgko1207/navi-bible)
+- [x] Vercel 배포 완료 (https://navi-bible.vercel.app/)
+- [x] git push → 자동 재배포 연동 확인
 
 ---
 
@@ -413,31 +414,188 @@ getProgressPercent(): number
 
 ## 향후 확장 (v3 이후)
 
-| 우선순위 | 기능 | 설명 |
-|---------|------|------|
-| v3-1 | 개인 메모 | 일차별 메모/기도제목 기록 |
-| v3-2 | 다크 모드 | 시스템 설정 연동 또는 수동 토글 |
-| v3-3 | 공유 기능 | 카카오톡/SNS 공유 버튼 |
-| v3-4 | 알림 | 매일 말씀 시간 알림 (Notification API) |
-| v4-1 | 백엔드 연동 | Supabase/Firebase로 사용자 데이터 동기화 |
-| v4-2 | 그룹 기능 | 함께 읽는 그룹, 그룹원 진도 확인 |
-| v4-3 | 관리자 CMS | 새 일차 콘텐츠 등록/수정 |
+### 확장 우선순위
+
+| 순위 | 기능 | 난이도 | 무료 서비스 | 설명 |
+|------|------|--------|------------|------|
+| 1 | **다크 모드** | 하 | 프론트만 | 서버 불필요, CSS만. 밤에 성경 읽을 때 필수 |
+| 2 | **Supabase 연동 (로그인+동기화)** | 중 | Supabase Auth+DB (무료) | 데이터 유실 방지, 기기 간 동기화 |
+| 3 | **개인 메모** | 하 | Supabase DB | DB 연동 후 일차별 메모/기도제목 저장 |
+| 4 | **공유 기능** | 하 | 카카오 SDK (무료) | 카카오톡/SNS 공유 버튼 |
+| 5 | **알림** | 중 | Web Push API / Firebase FCM | 매일 말씀 시간 알림 |
+| 6 | **그룹 기능** | 상 | Supabase (무료 5만 MAU) | 함께 읽는 그룹, 그룹원 진도 확인 |
+| 7 | **관리자 CMS** | 상 | Supabase | 새 일차 콘텐츠 등록/수정 |
+
+### localStorage 한계 분석
+
+현재 앱의 모든 사용자 데이터는 localStorage에 저장됨.
+
+| 상황 | 데이터 유실? |
+|------|-------------|
+| 브라우저 캐시/데이터 삭제 | **전부 삭제됨** |
+| 시크릿/프라이빗 모드 | 저장 안 됨 |
+| 다른 기기에서 접속 | 이전 데이터 없음 (기기별 별도) |
+| Safari "방문 기록 및 웹 사이트 데이터 지우기" | **전부 삭제됨** |
+| iOS에서 저장 공간 부족 시 | 자동 삭제될 수 있음 |
+| 앱 아이콘 삭제 후 재설치 | 삭제될 수 있음 |
+
+**결론: localStorage는 언제든 사라질 수 있다. 중요한 데이터는 서버에 백업 필요.**
+
+### 백엔드 연동 시 구조 (Supabase 추천)
+
+#### 추천 스택: Supabase (전부 무료)
+
+| 항목 | 무료 한도 |
+|------|----------|
+| 인증 | 5만 MAU (월간 활성 사용자) |
+| 데이터베이스 | PostgreSQL 500MB |
+| 스토리지 | 1GB |
+| API 요청 | 무제한 |
+| 가격 | **$0** (가족 단위 사용에 충분) |
+
+#### 데이터베이스 테이블 설계
+
+```sql
+-- 1) 사용자: Supabase Auth가 auth.users 자동 생성
+
+-- 2) 읽기 진도
+CREATE TABLE reading_progress (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  day         INTEGER NOT NULL,
+  completed   BOOLEAN DEFAULT FALSE,
+  completed_at TIMESTAMPTZ,
+  UNIQUE(user_id, day)
+);
+
+-- 3) 독서 회차 (1독/2독/3독)
+CREATE TABLE reading_rounds (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  round       INTEGER NOT NULL,
+  start_date  DATE NOT NULL,
+  end_date    DATE,
+  UNIQUE(user_id, round)
+);
+
+-- 4) 유튜브 재생 위치
+CREATE TABLE playback_positions (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  video_id    TEXT NOT NULL,
+  position    REAL NOT NULL,
+  duration    REAL NOT NULL,
+  updated_at  TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, video_id)
+);
+
+-- 5) 개인 메모 (향후 확장)
+CREATE TABLE notes (
+  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  day         INTEGER NOT NULL,
+  content     TEXT,
+  updated_at  TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(user_id, day)
+);
+```
+
+#### 데이터 흐름 (이중 저장 구조)
+
+```
+현재:  앱 → localStorage (기기에만 저장)
+
+향후:  앱 → localStorage (즉시 반영, 오프라인 대응)
+         → Supabase DB (서버 백업, 기기 간 동기화)
+```
+
+- 로그인 없이도 사용 가능 (현재처럼 localStorage)
+- 로그인하면 서버에 백업 + 기기 간 동기화
+- localStorage 삭제되어도 로그인하면 서버에서 복원
+
+#### 동기화 시나리오
+
+| 상황 | 동작 |
+|------|------|
+| 앱 처음 열 때 | localStorage 먼저 표시 → 서버에서 최신 데이터 가져와 병합 |
+| 체크 완료 시 | localStorage 즉시 업데이트 + 서버에 비동기 저장 |
+| 오프라인 상태 | localStorage에만 저장, 온라인 복귀 시 서버 동기화 |
+| 다른 기기 접속 | 로그인 → 서버에서 데이터 가져옴 → localStorage에 복원 |
+| localStorage 삭제됨 | 로그인만 하면 서버에서 전체 복원 |
+
+#### Supabase 셋업 절차 (실제 구현 시)
+
+```
+1. supabase.com 가입 (GitHub 로그인)
+2. 새 프로젝트 생성 (리전: Northeast Asia - Tokyo)
+3. SQL Editor에서 테이블 생성
+4. npm install @supabase/supabase-js
+5. 환경변수 설정 (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY)
+6. storage.ts 수정: localStorage + Supabase 이중 저장
+7. 로그인 UI 추가
+8. Vercel 환경변수 등록 → 배포
+```
 
 ---
 
-## 데이터 추가 방법
+## 콘텐츠 관리 & 배포 방법
 
-사용자가 Bible 폴더에 `N일차.md` 파일을 추가하면:
-1. 마크다운 파일 내용을 파싱
-2. 성경 범위 첫 글자로 구약/신약 자동 구분
-3. `readings.ts`에 데이터 추가
-4. 앱에 즉시 반영
+### 콘텐츠 추가 워크플로우
+
+```
+content/ 폴더에 N일차.md 추가 → npm run generate → git push → Vercel 자동 배포
+```
+
+1. `content/` 폴더에 `N일차.md` 파일 추가 (형식은 아래 참조)
+2. `npm run generate` — .md 파일을 파싱하여 `src/data/readings.ts` 자동 생성
+3. `git add . && git commit && git push` — Vercel이 자동 재배포
+   - `npm run build` / `npm run dev` 시에도 generate가 자동 실행됨
+
+### .md 파일 형식
+
+```markdown
+# 내비따라성경읽기 (1년3독)
+## 월. 1일차 내비따라성경읽기 포인트 창1-19장
+
+창1:1-25 ⇒자연과학 창조
+창1:26-3:24 ⇒사회과학 원리도 시작
+
+본문 요약 내용...
+
+▶구약읽기 내비게이션 p61-72 참고하세요.
+
+개역개정 음원
+https://youtu.be/Ch_nEGrSa1E
+```
+
+### 주요 파일 구조
+
+```
+navi-bible/
+├── content/                     # 📂 일차별 .md 파일 (데이터 원본)
+│   ├── 1일차.md ~ 15일차.md
+│   └── (계속 추가)
+├── scripts/
+│   └── generate-readings.mjs   # 🔧 .md → readings.ts 변환 스크립트
+├── src/data/
+│   └── readings.ts             # 🤖 자동 생성됨 (직접 수정 금지)
+└── ...
+```
+
+### 배포 정보
+
+| 항목 | 내용 |
+|------|------|
+| GitHub | https://github.com/hgko1207/navi-bible |
+| 배포 URL | https://navi-bible.vercel.app/ |
+| 배포 방식 | git push → Vercel 자동 배포 |
+| 아이폰 설치 | Safari → 공유 → 홈 화면에 추가 |
 
 ---
 
 ## 참고사항
 
-- 현재 1~3일차 데이터 적용 완료
-- 나머지 일차는 사용자가 마크다운 파일 올려주면 즉시 적용
+- 현재 1~15일차 데이터 적용 완료 (60일차 이상까지 확장 예정)
+- 홈 화면: "이어서 읽기" — 안 읽은 가장 낮은 일차를 자동 표시
 - 독서 기록은 localStorage에 저장 (서버 불필요)
 - TTS는 브라우저 내장 기능 사용 (추가 비용 없음)

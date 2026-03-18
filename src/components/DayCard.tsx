@@ -10,14 +10,14 @@ export default function DayCard({ reading, completed }: DayCardProps) {
   return (
     <Link href={`/days/${reading.day}`}>
       <div
-        className={`card-glass flex items-center gap-3.5 rounded-2xl px-4 py-3.5 transition-all duration-200 active:scale-[0.98] ${
+        className={`card-glass flex items-center gap-4 rounded-2xl px-4 py-4.5 shadow-sm transition-all duration-200 active:scale-[0.98] ${
           completed
             ? "border-emerald-200/60 bg-gradient-to-r from-emerald-50/80 to-white/70"
             : "hover:border-amber-200/60 hover:shadow-md hover:shadow-amber-100/20"
         }`}
       >
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all ${
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold transition-all ${
             completed
               ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50"
               : "bg-gradient-to-br from-amber-100 to-amber-50 text-amber-700"
@@ -33,7 +33,7 @@ export default function DayCard({ reading, completed }: DayCardProps) {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-semibold text-stone-800">
+            <span className="text-[14px] font-semibold text-stone-800">
               {reading.weekday}. {reading.day}일차
             </span>
             <span
@@ -46,7 +46,7 @@ export default function DayCard({ reading, completed }: DayCardProps) {
               {reading.testament}
             </span>
           </div>
-          <p className="mt-0.5 truncate text-[12px] text-stone-400">
+          <p className="mt-1 truncate text-[12px] text-stone-400">
             {reading.bibleRange}
           </p>
         </div>

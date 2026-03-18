@@ -142,7 +142,7 @@ export default function DayDetailPage() {
         {prevDay ? (
           <Link
             href={`/days/${prevDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -155,7 +155,7 @@ export default function DayDetailPage() {
         {nextDay ? (
           <Link
             href={`/days/${nextDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
           >
             {nextDay.day}일차
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>

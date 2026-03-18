@@ -56,7 +56,7 @@ export default function DaysListPage() {
             {oldTestament.filter((r) => progress.completedDays.includes(r.day)).length}/{oldTestament.length}
           </span>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {oldTestament.map((reading) => (
             <DayCard
               key={reading.day}
@@ -77,7 +77,7 @@ export default function DaysListPage() {
               {newTestament.filter((r) => progress.completedDays.includes(r.day)).length}/{newTestament.length}
             </span>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {newTestament.map((reading) => (
               <DayCard
                 key={reading.day}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import Link from "next/link";
 import { readings } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
 import { markDayComplete, syncRoundProgress } from "@/lib/storage";
@@ -19,6 +20,8 @@ export default function HomePage() {
   const reading = getNextReading(progress.completedDays);
   const completedCount = progress.completedDays.length;
   const totalDays = readings.length;
+  const prevDay = readings.find((r) => r.day === reading.day - 1);
+  const nextDay = readings.find((r) => r.day === reading.day + 1);
 
   const handleAutoComplete = useCallback(() => {
     if (!isCompleted(reading.day)) {
@@ -129,6 +132,36 @@ export default function HomePage() {
         checked={isCompleted(reading.day)}
         onToggle={() => toggle(reading.day)}
       />
+
+      {/* 이전/다음 일차 네비게이션 */}
+      <div className="flex gap-3">
+        {prevDay ? (
+          <Link
+            href={`/days/${prevDay.day}`}
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+            {prevDay.day}일차
+          </Link>
+        ) : (
+          <div className="flex-1" />
+        )}
+        {nextDay ? (
+          <Link
+            href={`/days/${nextDay.day}`}
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+          >
+            {nextDay.day}일차
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        ) : (
+          <div className="flex-1" />
+        )}
+      </div>
     </div>
   );
 }

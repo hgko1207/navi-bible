@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { readings, getReadingByDay } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
-import { markDayComplete, syncRoundProgress } from "@/lib/storage";
+import { markDayComplete, markDaysCompleteUpTo, syncRoundProgress } from "@/lib/storage";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import KeyPoints from "@/components/KeyPoints";
 import CheckButton from "@/components/CheckButton";
@@ -17,6 +17,17 @@ export default function DayDetailPage() {
   const { isCompleted, toggle } = useProgress();
 
   const reading = getReadingByDay(dayNum);
+  const [bulkDone, setBulkDone] = useState(false);
+
+  const handleBulkComplete = useCallback(() => {
+    if (reading && dayNum > 1) {
+      markDaysCompleteUpTo(dayNum);
+      syncRoundProgress();
+      window.dispatchEvent(new Event("storage"));
+      setBulkDone(true);
+      setTimeout(() => setBulkDone(false), 2000);
+    }
+  }, [reading, dayNum]);
 
   const handleAutoComplete = useCallback(() => {
     if (reading && !isCompleted(reading.day)) {
@@ -136,6 +147,16 @@ export default function DayDetailPage() {
         checked={isCompleted(reading.day)}
         onToggle={() => toggle(reading.day)}
       />
+
+      {/* 여기까지 모두 완료 */}
+      {dayNum > 1 && (
+        <button
+          onClick={handleBulkComplete}
+          className="w-full rounded-2xl border border-stone-200 bg-white py-3.5 text-sm font-semibold text-stone-500 shadow-sm transition-all hover:border-amber-300 hover:text-amber-600 active:scale-[0.98]"
+        >
+          {bulkDone ? "완료되었습니다!" : `1일차 ~ ${dayNum}일차 모두 완료`}
+        </button>
+      )}
 
       {/* 이전/다음 네비게이션 */}
       <div className="flex gap-3">

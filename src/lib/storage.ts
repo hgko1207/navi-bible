@@ -53,6 +53,17 @@ export function markDayComplete(day: number): ProgressData {
   return progress;
 }
 
+export function markDaysCompleteUpTo(day: number): ProgressData {
+  const progress = getProgress();
+  for (let d = 1; d <= day; d++) {
+    if (!progress.completedDays.includes(d)) {
+      progress.completedDays.push(d);
+    }
+  }
+  saveProgress(progress);
+  return progress;
+}
+
 export function isDayCompleted(day: number): boolean {
   return getProgress().completedDays.includes(day);
 }

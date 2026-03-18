@@ -7,6 +7,7 @@ import {
   getReadingHistory,
   completeCurrentRound,
   syncRoundProgress,
+  markDaysCompleteUpTo,
 } from "@/lib/storage";
 import { ReadingHistory } from "@/lib/types";
 import ProgressBar from "@/components/ProgressBar";
@@ -15,6 +16,8 @@ import ReadingHistoryCard from "@/components/ReadingHistoryCard";
 export default function ProgressPage() {
   const { progress } = useProgress();
   const [history, setHistory] = useState<ReadingHistory | null>(null);
+  const [bulkDay, setBulkDay] = useState("");
+  const [bulkDone, setBulkDone] = useState(false);
 
   useEffect(() => {
     syncRoundProgress();
@@ -23,6 +26,17 @@ export default function ProgressPage() {
 
   const totalDays = readings.length;
   const completedCount = progress.completedDays.length;
+
+  const handleBulkComplete = () => {
+    const dayNum = Number(bulkDay);
+    if (!dayNum || dayNum < 1 || dayNum > totalDays) return;
+    markDaysCompleteUpTo(dayNum);
+    syncRoundProgress();
+    window.dispatchEvent(new Event("storage"));
+    setBulkDone(true);
+    setTimeout(() => setBulkDone(false), 2000);
+    setBulkDay("");
+  };
 
   const oldTestament = readings.filter((r) => r.testament === "구약");
   const newTestament = readings.filter((r) => r.testament === "신약");
@@ -97,6 +111,34 @@ export default function ProgressPage() {
             color="blue"
           />
         )}
+      </div>
+
+      {/* 현재 진도 설정 */}
+      <div className="card-glass rounded-2xl p-5">
+        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+          현재 진도 설정
+        </h3>
+        <p className="mb-3 text-[13px] text-stone-500">
+          입력한 일차까지 모두 완료 처리합니다.
+        </p>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            min={1}
+            max={totalDays}
+            placeholder={`1 ~ ${totalDays}`}
+            value={bulkDay}
+            onChange={(e) => setBulkDay(e.target.value)}
+            className="h-11 w-full flex-1 rounded-xl border border-stone-200 bg-white px-4 text-[15px] font-medium text-stone-700 outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+          />
+          <button
+            onClick={handleBulkComplete}
+            disabled={!bulkDay || Number(bulkDay) < 1 || Number(bulkDay) > totalDays}
+            className="h-11 shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-5 text-sm font-bold text-white shadow-md shadow-amber-200/30 transition-all hover:shadow-lg active:scale-[0.97] disabled:opacity-40 disabled:shadow-none"
+          >
+            {bulkDone ? "완료!" : "적용"}
+          </button>
+        </div>
       </div>
 
       {/* 완료된 일차 */}

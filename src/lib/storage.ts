@@ -3,6 +3,9 @@ import {
   PlaybackPosition,
   ReadingHistory,
   ReadingRound,
+  AppSettings,
+  ThemeMode,
+  FontSize,
 } from "./types";
 
 // ─── Progress ───
@@ -187,4 +190,53 @@ export function syncRoundProgress(): void {
     current.completedDays = [...progress.completedDays];
     saveReadingHistory(history);
   }
+}
+
+// ─── App Settings ───
+
+const SETTINGS_KEY = "navi-bible-settings";
+
+function getDefaultSettings(): AppSettings {
+  return {
+    theme: "system",
+    fontSize: "medium",
+    pwaGuideDismissed: false,
+  };
+}
+
+export function getSettings(): AppSettings {
+  if (typeof window === "undefined") return getDefaultSettings();
+  const stored = localStorage.getItem(SETTINGS_KEY);
+  if (!stored) return getDefaultSettings();
+  try {
+    return { ...getDefaultSettings(), ...(JSON.parse(stored) as Partial<AppSettings>) };
+  } catch {
+    return getDefaultSettings();
+  }
+}
+
+export function saveSettings(settings: AppSettings): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+export function updateTheme(theme: ThemeMode): AppSettings {
+  const settings = getSettings();
+  settings.theme = theme;
+  saveSettings(settings);
+  return settings;
+}
+
+export function updateFontSize(fontSize: FontSize): AppSettings {
+  const settings = getSettings();
+  settings.fontSize = fontSize;
+  saveSettings(settings);
+  return settings;
+}
+
+export function dismissPwaGuide(): AppSettings {
+  const settings = getSettings();
+  settings.pwaGuideDismissed = true;
+  saveSettings(settings);
+  return settings;
 }

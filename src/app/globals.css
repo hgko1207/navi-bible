@@ -5,14 +5,67 @@
   --color-foreground: #1a1a1a;
 }
 
+/* ─── CSS Custom Properties (Light) ─── */
+:root {
+  --app-font-size: 16px;
+  --bg-primary: #f8f6f3;
+  --bg-secondary: #f3efe8;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-solid: #ffffff;
+  --bg-input: #ffffff;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
+  --text-tertiary: #78716c;
+  --text-muted: #a8a29e;
+  --border-color: rgba(0, 0, 0, 0.04);
+  --border-card: rgba(0, 0, 0, 0.06);
+  --border-input: #e7e5e4;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --header-bg: #f8f6f3;
+  --header-bg-transparent: rgba(248, 246, 243, 0.8);
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --nav-border: rgba(214, 211, 209, 0.5);
+  --badge-bg: rgba(0, 0, 0, 0.04);
+  --amber-soft-bg: rgba(251, 191, 36, 0.06);
+  --emerald-soft-bg: rgba(16, 185, 129, 0.06);
+  --blue-soft-bg: rgba(59, 130, 246, 0.06);
+  --red-soft-bg: rgba(239, 68, 68, 0.1);
+}
+
+/* ─── Dark Mode ─── */
+html.dark {
+  --bg-primary: #0c0a09;
+  --bg-secondary: #1c1917;
+  --bg-card: rgba(28, 25, 23, 0.85);
+  --bg-card-solid: #1c1917;
+  --bg-input: #292524;
+  --text-primary: #fafaf9;
+  --text-secondary: #d6d3d1;
+  --text-tertiary: #a8a29e;
+  --text-muted: #78716c;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-input: #44403c;
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --header-bg: #0c0a09;
+  --header-bg-transparent: rgba(12, 10, 9, 0.8);
+  --nav-bg: rgba(28, 25, 23, 0.9);
+  --nav-border: rgba(68, 64, 60, 0.5);
+  --badge-bg: rgba(255, 255, 255, 0.06);
+  --amber-soft-bg: rgba(251, 191, 36, 0.12);
+  --emerald-soft-bg: rgba(16, 185, 129, 0.12);
+  --blue-soft-bg: rgba(59, 130, 246, 0.12);
+  --red-soft-bg: rgba(239, 68, 68, 0.15);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background: linear-gradient(180deg, #f8f6f3 0%, #f3efe8 100%);
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   background-attachment: fixed;
-  color: var(--color-foreground);
+  color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -54,17 +107,23 @@ main > div {
 }
 
 .card-glass {
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--bg-card);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
 }
 
 .shimmer {
   background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.4) 50%, transparent 75%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+/* ─── Font size application ─── */
+.content-text {
+  font-size: var(--app-font-size);
+  line-height: 1.9;
 }
 
 @supports (padding-bottom: env(safe-area-inset-bottom)) {

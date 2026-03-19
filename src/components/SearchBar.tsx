@@ -34,10 +34,10 @@ export default function SearchBar({ readings, completedDays }: SearchBarProps) {
 
   return (
     <div className="relative">
-      {/* 검색 입력 */}
       <div className="relative">
         <svg
-          className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400"
+          className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2"
+          style={{ color: "var(--text-muted)" }}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -56,13 +56,15 @@ export default function SearchBar({ readings, completedDays }: SearchBarProps) {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setTimeout(() => setIsFocused(false), 200)}
           placeholder="일차, 성경 범위, 키워드 검색..."
-          className="card-glass w-full rounded-2xl py-3 pl-10 pr-4 text-sm text-stone-700 outline-none transition-all placeholder:text-stone-400 focus:border-amber-400/60 focus:ring-2 focus:ring-amber-100/50"
+          className="card-glass w-full rounded-2xl py-3 pl-10 pr-4 text-sm outline-none transition-all focus:ring-2 focus:ring-amber-100/50 dark:focus:ring-amber-900/50"
+          style={{ color: "var(--text-primary)" }}
         />
         {query.length > 0 && (
           <button
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-300 hover:text-stone-500"
+            className="absolute right-3 top-1/2 -translate-y-1/2"
+            style={{ color: "var(--text-muted)" }}
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -71,11 +73,16 @@ export default function SearchBar({ readings, completedDays }: SearchBarProps) {
         )}
       </div>
 
-      {/* 검색 결과 */}
       {showResults && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-64 overflow-y-auto rounded-xl border border-stone-200 bg-white shadow-xl">
+        <div
+          className="absolute left-0 right-0 top-full z-50 mt-1 max-h-64 overflow-y-auto rounded-xl border shadow-xl"
+          style={{
+            background: "var(--bg-card-solid)",
+            borderColor: "var(--border-input)",
+          }}
+        >
           {results.length === 0 ? (
-            <div className="px-4 py-6 text-center text-sm text-stone-400">
+            <div className="px-4 py-6 text-center text-sm" style={{ color: "var(--text-muted)" }}>
               검색 결과가 없습니다
             </div>
           ) : (
@@ -85,26 +92,27 @@ export default function SearchBar({ readings, completedDays }: SearchBarProps) {
                 <Link
                   key={r.day}
                   href={`/days/${r.day}`}
-                  className="flex items-center gap-3 border-b border-stone-50 px-4 py-3 transition-colors last:border-0 hover:bg-amber-50/50"
+                  className="flex items-center gap-3 border-b px-4 py-3 transition-colors last:border-0 hover:bg-amber-50/50 dark:hover:bg-amber-900/10"
+                  style={{ borderColor: "var(--border-color)" }}
                 >
                   <div
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
                       completed
-                        ? "bg-emerald-100 text-emerald-600"
-                        : "bg-amber-100 text-amber-700"
+                        ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+                        : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
                     }`}
                   >
                     {r.day}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-stone-700">
+                    <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
                       {r.weekday}. {r.day}일차{" "}
-                      <span className="text-stone-400">·</span>{" "}
-                      <span className="text-xs text-stone-500">
+                      <span style={{ color: "var(--text-muted)" }}>·</span>{" "}
+                      <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
                         {r.testament}
                       </span>
                     </p>
-                    <p className="truncate text-xs text-stone-400">
+                    <p className="truncate text-xs" style={{ color: "var(--text-muted)" }}>
                       {r.bibleRange}
                     </p>
                   </div>

@@ -13,6 +13,31 @@ import { ReadingHistory } from "@/lib/types";
 import ProgressBar from "@/components/ProgressBar";
 import ReadingHistoryCard from "@/components/ReadingHistoryCard";
 
+interface DayRange {
+  start: number;
+  end: number;
+}
+
+function groupConsecutiveDays(days: number[]): DayRange[] {
+  if (days.length === 0) return [];
+  const sorted = [...days].sort((a, b) => a - b);
+  const ranges: DayRange[] = [];
+  let start = sorted[0];
+  let end = sorted[0];
+
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] === end + 1) {
+      end = sorted[i];
+    } else {
+      ranges.push({ start, end });
+      start = sorted[i];
+      end = sorted[i];
+    }
+  }
+  ranges.push({ start, end });
+  return ranges;
+}
+
 export default function ProgressPage() {
   const { progress } = useProgress();
   const [history, setHistory] = useState<ReadingHistory | null>(null);
@@ -94,7 +119,7 @@ export default function ProgressPage() {
 
       {/* 구약/신약 상세 */}
       <div className="card-glass space-y-4 rounded-2xl p-5">
-        <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-500">
           상세 진도
         </h3>
         <ProgressBar
@@ -115,10 +140,10 @@ export default function ProgressPage() {
 
       {/* 현재 진도 설정 */}
       <div className="card-glass rounded-2xl p-5">
-        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-500">
           현재 진도 설정
         </h3>
-        <p className="mb-3 text-[13px] text-stone-500">
+        <p className="mb-3 text-[13px]" style={{ color: "var(--text-tertiary)" }}>
           입력한 일차까지 모두 완료 처리합니다.
         </p>
         <div className="flex gap-2">
@@ -129,7 +154,8 @@ export default function ProgressPage() {
             placeholder={`1 ~ ${totalDays}`}
             value={bulkDay}
             onChange={(e) => setBulkDay(e.target.value)}
-            className="h-11 w-full flex-1 rounded-xl border border-stone-200 bg-white px-4 text-[15px] font-medium text-stone-700 outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+            className="h-11 w-full flex-1 rounded-xl border px-4 text-[15px] font-medium outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-100/50 dark:focus:ring-amber-900/50"
+            style={{ borderColor: "var(--border-input)", background: "var(--bg-input)", color: "var(--text-primary)" }}
           />
           <button
             onClick={handleBulkComplete}
@@ -143,7 +169,7 @@ export default function ProgressPage() {
 
       {/* 완료된 일차 */}
       <div className="card-glass rounded-2xl p-5">
-        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400">
+        <h3 className="mb-3 text-[11px] font-bold uppercase tracking-[0.15em] text-stone-400 dark:text-stone-500">
           완료한 말씀
         </h3>
         {completedCount === 0 ? (
@@ -153,31 +179,29 @@ export default function ProgressPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <p className="mt-3 text-sm font-medium text-stone-500">
+            <p className="mt-3 text-sm font-medium" style={{ color: "var(--text-tertiary)" }}>
               아직 완료한 말씀이 없습니다
             </p>
-            <p className="mt-1 text-xs text-stone-400">
+            <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>
               오늘의 말씀부터 시작해보세요!
             </p>
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            {progress.completedDays
-              .sort((a, b) => a - b)
-              .map((day) => {
-                const r = readings.find((rd) => rd.day === day);
-                return (
-                  <span
-                    key={day}
-                    className="inline-flex items-center gap-1 rounded-lg bg-emerald-50/80 px-2.5 py-1.5 text-xs font-semibold text-emerald-600"
-                  >
-                    <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                    {day}일차
-                  </span>
-                );
-              })}
+            {groupConsecutiveDays(progress.completedDays).map((range) => (
+              <span
+                key={`${range.start}-${range.end}`}
+                className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+                style={{ background: "var(--emerald-soft-bg)" }}
+              >
+                <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+                {range.start === range.end
+                  ? `${range.start}일차`
+                  : `${range.start}~${range.end}일차`}
+              </span>
+            ))}
           </div>
         )}
       </div>

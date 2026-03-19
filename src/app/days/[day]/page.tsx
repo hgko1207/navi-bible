@@ -10,6 +10,7 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import KeyPoints from "@/components/KeyPoints";
 import CheckButton from "@/components/CheckButton";
 import TTSPlayer from "@/components/TTSPlayer";
+import NextDayToast from "@/components/NextDayToast";
 
 export default function DayDetailPage() {
   const params = useParams<{ day: string }>();
@@ -18,6 +19,7 @@ export default function DayDetailPage() {
 
   const reading = getReadingByDay(dayNum);
   const [bulkDone, setBulkDone] = useState(false);
+  const [showNextToast, setShowNextToast] = useState(false);
 
   const handleBulkComplete = useCallback(() => {
     if (reading && dayNum > 1) {
@@ -29,13 +31,28 @@ export default function DayDetailPage() {
     }
   }, [reading, dayNum]);
 
+  const nextDay = reading ? readings.find((r) => r.day === dayNum + 1) : null;
+
   const handleAutoComplete = useCallback(() => {
     if (reading && !isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
       window.dispatchEvent(new Event("storage"));
+      if (nextDay) {
+        setShowNextToast(true);
+      }
     }
-  }, [reading, isCompleted]);
+  }, [reading, isCompleted, nextDay]);
+
+  const handleToggle = useCallback(() => {
+    if (reading) {
+      const wasCompleted = isCompleted(reading.day);
+      toggle(reading.day);
+      if (!wasCompleted && nextDay) {
+        setShowNextToast(true);
+      }
+    }
+  }, [reading, isCompleted, toggle, nextDay]);
 
   if (!reading) {
     return (
@@ -59,7 +76,6 @@ export default function DayDetailPage() {
   }
 
   const prevDay = readings.find((r) => r.day === dayNum - 1);
-  const nextDay = readings.find((r) => r.day === dayNum + 1);
 
   return (
     <div className="space-y-5">
@@ -100,7 +116,7 @@ export default function DayDetailPage() {
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
             </svg>
           </div>
-          <span className="text-[12px] font-semibold text-stone-500">개역개정 음원</span>
+          <span className="text-[12px] font-semibold text-stone-500 dark:text-stone-400">개역개정 음원</span>
         </div>
         <YouTubePlayer
           videoId={reading.youtubeId}
@@ -123,21 +139,21 @@ export default function DayDetailPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </div>
-            <span className="text-[12px] font-semibold text-stone-500">오늘의 요약</span>
+            <span className="text-[12px] font-semibold text-stone-500 dark:text-stone-400">오늘의 요약</span>
           </div>
           <TTSPlayer text={reading.content} />
         </div>
         <div className="px-5 py-4">
-          <div className="space-y-5 text-[16px] leading-[1.9] text-stone-600">
+          <div className="content-text space-y-5" style={{ color: "var(--text-secondary)" }}>
             {reading.content.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-5 flex items-center gap-2 rounded-xl bg-amber-50/60 px-3.5 py-2.5">
+          <div className="mt-5 flex items-center gap-2 rounded-xl px-3.5 py-2.5" style={{ background: "var(--amber-soft-bg)" }}>
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
-            <span className="text-xs text-amber-600/80">{reading.reference} 참고</span>
+            <span className="text-xs text-amber-600/80 dark:text-amber-400/80">{reading.reference} 참고</span>
           </div>
         </div>
       </section>
@@ -145,14 +161,15 @@ export default function DayDetailPage() {
       {/* 완료 체크 */}
       <CheckButton
         checked={isCompleted(reading.day)}
-        onToggle={() => toggle(reading.day)}
+        onToggle={handleToggle}
       />
 
       {/* 여기까지 모두 완료 */}
       {dayNum > 1 && (
         <button
           onClick={handleBulkComplete}
-          className="w-full rounded-2xl border border-stone-200 bg-white py-3.5 text-sm font-semibold text-stone-500 shadow-sm transition-all hover:border-amber-300 hover:text-amber-600 active:scale-[0.98]"
+          className="w-full rounded-2xl border py-3.5 text-sm font-semibold shadow-sm transition-all hover:border-amber-300 hover:text-amber-600 active:scale-[0.98]"
+          style={{ borderColor: "var(--border-input)", background: "var(--bg-card-solid)", color: "var(--text-tertiary)" }}
         >
           {bulkDone ? "완료되었습니다!" : `1일차 ~ ${dayNum}일차 모두 완료`}
         </button>
@@ -163,7 +180,8 @@ export default function DayDetailPage() {
         {prevDay ? (
           <Link
             href={`/days/${prevDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            style={{ color: "var(--text-secondary)" }}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -176,7 +194,8 @@ export default function DayDetailPage() {
         {nextDay ? (
           <Link
             href={`/days/${nextDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            style={{ color: "var(--text-secondary)" }}
           >
             {nextDay.day}일차
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -187,6 +206,14 @@ export default function DayDetailPage() {
           <div className="flex-1" />
         )}
       </div>
+
+      {/* 다음 일차 이동 토스트 */}
+      {showNextToast && nextDay && (
+        <NextDayToast
+          nextDay={nextDay.day}
+          onDismiss={() => setShowNextToast(false)}
+        />
+      )}
     </div>
   );
 }

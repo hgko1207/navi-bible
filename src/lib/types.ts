@@ -49,3 +49,14 @@ export interface YTPlayerState {
   BUFFERING: 3;
   CUED: 5;
 }
+
+// ─── Settings ───
+
+export type ThemeMode = "light" | "dark" | "system";
+export type FontSize = "small" | "medium" | "large" | "xlarge";
+
+export interface AppSettings {
+  theme: ThemeMode;
+  fontSize: FontSize;
+  pwaGuideDismissed: boolean;
+}

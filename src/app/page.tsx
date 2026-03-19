@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { readings } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
@@ -9,6 +9,7 @@ import YouTubePlayer from "@/components/YouTubePlayer";
 import KeyPoints from "@/components/KeyPoints";
 import CheckButton from "@/components/CheckButton";
 import TTSPlayer from "@/components/TTSPlayer";
+import NextDayToast from "@/components/NextDayToast";
 
 function getNextReading(completedDays: number[]) {
   const unread = readings.find((r) => !completedDays.includes(r.day));
@@ -22,14 +23,27 @@ export default function HomePage() {
   const totalDays = readings.length;
   const prevDay = readings.find((r) => r.day === reading.day - 1);
   const nextDay = readings.find((r) => r.day === reading.day + 1);
+  const [showNextToast, setShowNextToast] = useState(false);
 
   const handleAutoComplete = useCallback(() => {
     if (!isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
       window.dispatchEvent(new Event("storage"));
+      if (nextDay) {
+        setShowNextToast(true);
+      }
     }
-  }, [reading.day, isCompleted]);
+  }, [reading.day, isCompleted, nextDay]);
+
+  const handleToggle = useCallback(() => {
+    const wasCompleted = isCompleted(reading.day);
+    toggle(reading.day);
+    // Show toast when marking as complete (not when unchecking)
+    if (!wasCompleted && nextDay) {
+      setShowNextToast(true);
+    }
+  }, [reading.day, isCompleted, toggle, nextDay]);
 
   return (
     <div className="space-y-5">
@@ -37,7 +51,6 @@ export default function HomePage() {
       <div className="relative overflow-hidden rounded-[28px] p-[1px]">
         <div className="absolute inset-0 rounded-[28px] bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500" />
         <div className="relative overflow-hidden rounded-[27px] bg-gradient-to-br from-amber-600 via-amber-700 to-orange-800 p-6">
-          {/* 장식 요소 */}
           <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br from-white/10 to-transparent" />
           <div className="absolute -bottom-16 -left-16 h-56 w-56 rounded-full bg-gradient-to-tr from-orange-900/30 to-transparent" />
           <div className="absolute right-6 top-6 h-20 w-20 rounded-full border border-white/10" />
@@ -85,7 +98,7 @@ export default function HomePage() {
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
             </svg>
           </div>
-          <span className="text-[12px] font-semibold text-stone-500">개역개정 음원</span>
+          <span className="text-[12px] font-semibold text-stone-500 dark:text-stone-400">개역개정 음원</span>
         </div>
         <YouTubePlayer
           videoId={reading.youtubeId}
@@ -101,28 +114,28 @@ export default function HomePage() {
 
       {/* 요약 본문 */}
       <section className="card-glass overflow-hidden rounded-2xl">
-        <div className="flex items-center justify-between border-b border-stone-100/80 px-5 py-3.5">
+        <div className="flex items-center justify-between border-b border-stone-100/80 dark:border-stone-800/80 px-5 py-3.5">
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/10">
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-amber-600" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </div>
-            <span className="text-[12px] font-semibold text-stone-500">오늘의 요약</span>
+            <span className="text-[12px] font-semibold text-stone-500 dark:text-stone-400">오늘의 요약</span>
           </div>
           <TTSPlayer text={reading.content} />
         </div>
         <div className="px-5 py-4">
-          <div className="space-y-5 text-[16px] leading-[1.9] text-stone-600">
+          <div className="content-text space-y-5" style={{ color: "var(--text-secondary)" }}>
             {reading.content.split("\n\n").map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
           </div>
-          <div className="mt-5 flex items-center gap-2 rounded-xl bg-amber-50/60 px-3.5 py-2.5">
+          <div className="mt-5 flex items-center gap-2 rounded-xl px-3.5 py-2.5" style={{ background: "var(--amber-soft-bg)" }}>
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
-            <span className="text-xs text-amber-600/80">{reading.reference} 참고</span>
+            <span className="text-xs text-amber-600/80 dark:text-amber-400/80">{reading.reference} 참고</span>
           </div>
         </div>
       </section>
@@ -130,7 +143,7 @@ export default function HomePage() {
       {/* 완료 체크 */}
       <CheckButton
         checked={isCompleted(reading.day)}
-        onToggle={() => toggle(reading.day)}
+        onToggle={handleToggle}
       />
 
       {/* 이전/다음 일차 네비게이션 */}
@@ -138,7 +151,8 @@ export default function HomePage() {
         {prevDay ? (
           <Link
             href={`/days/${prevDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            style={{ color: "var(--text-secondary)" }}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -151,7 +165,8 @@ export default function HomePage() {
         {nextDay ? (
           <Link
             href={`/days/${nextDay.day}`}
-            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium text-stone-600 shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            className="card-glass flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3.5 text-sm font-medium shadow-sm transition-all hover:border-amber-300/60 hover:shadow-md active:scale-[0.98]"
+            style={{ color: "var(--text-secondary)" }}
           >
             {nextDay.day}일차
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -162,6 +177,14 @@ export default function HomePage() {
           <div className="flex-1" />
         )}
       </div>
+
+      {/* 다음 일차 이동 토스트 */}
+      {showNextToast && nextDay && (
+        <NextDayToast
+          nextDay={nextDay.day}
+          onDismiss={() => setShowNextToast(false)}
+        />
+      )}
     </div>
   );
 }

@@ -201,6 +201,7 @@ function getDefaultSettings(): AppSettings {
     theme: "system",
     fontSize: "medium",
     pwaGuideDismissed: false,
+    autoComplete: true,
   };
 }
 

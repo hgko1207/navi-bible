@@ -59,4 +59,5 @@ export interface AppSettings {
   theme: ThemeMode;
   fontSize: FontSize;
   pwaGuideDismissed: boolean;
+  autoComplete: boolean;
 }

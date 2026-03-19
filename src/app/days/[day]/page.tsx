@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { readings, getReadingByDay } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
+import { useSettings } from "@/hooks/useSettings";
 import { markDayComplete, markDaysCompleteUpTo, syncRoundProgress } from "@/lib/storage";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import KeyPoints from "@/components/KeyPoints";
@@ -16,6 +17,7 @@ export default function DayDetailPage() {
   const params = useParams<{ day: string }>();
   const dayNum = Number(params.day);
   const { isCompleted, toggle } = useProgress();
+  const { settings } = useSettings();
 
   const reading = getReadingByDay(dayNum);
   const [bulkDone, setBulkDone] = useState(false);
@@ -34,6 +36,7 @@ export default function DayDetailPage() {
   const nextDay = reading ? readings.find((r) => r.day === dayNum + 1) : null;
 
   const handleAutoComplete = useCallback(() => {
+    if (!settings.autoComplete) return;
     if (reading && !isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
@@ -42,7 +45,7 @@ export default function DayDetailPage() {
         setShowNextToast(true);
       }
     }
-  }, [reading, isCompleted, nextDay]);
+  }, [reading, isCompleted, nextDay, settings.autoComplete]);
 
   const handleToggle = useCallback(() => {
     if (reading) {

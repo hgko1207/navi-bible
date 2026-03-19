@@ -11,6 +11,7 @@ import {
 import { AppSettings, ThemeMode, FontSize } from "@/lib/types";
 import {
   getSettings,
+  saveSettings,
   updateTheme as storageUpdateTheme,
   updateFontSize as storageUpdateFontSize,
 } from "@/lib/storage";
@@ -20,6 +21,7 @@ interface SettingsContextValue {
   resolvedTheme: "light" | "dark";
   setTheme: (theme: ThemeMode) => void;
   setFontSize: (size: FontSize) => void;
+  setAutoComplete: (enabled: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -98,9 +100,16 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSettings({ ...updated });
   }, []);
 
+  const setAutoComplete = useCallback((enabled: boolean) => {
+    const current = getSettings();
+    current.autoComplete = enabled;
+    saveSettings(current);
+    setSettings({ ...current });
+  }, []);
+
   return (
     <SettingsContext.Provider
-      value={{ settings, resolvedTheme, setTheme, setFontSize }}
+      value={{ settings, resolvedTheme, setTheme, setFontSize, setAutoComplete }}
     >
       {children}
     </SettingsContext.Provider>

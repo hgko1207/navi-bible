@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { readings } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
+import { useSettings } from "@/hooks/useSettings";
 import { markDayComplete, syncRoundProgress } from "@/lib/storage";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import KeyPoints from "@/components/KeyPoints";
@@ -18,6 +19,7 @@ function getNextReading(completedDays: number[]) {
 
 export default function HomePage() {
   const { isCompleted, toggle, progress } = useProgress();
+  const { settings } = useSettings();
   const reading = getNextReading(progress.completedDays);
   const completedCount = progress.completedDays.length;
   const totalDays = readings.length;
@@ -26,6 +28,7 @@ export default function HomePage() {
   const [showNextToast, setShowNextToast] = useState(false);
 
   const handleAutoComplete = useCallback(() => {
+    if (!settings.autoComplete) return;
     if (!isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
@@ -34,7 +37,7 @@ export default function HomePage() {
         setShowNextToast(true);
       }
     }
-  }, [reading.day, isCompleted, nextDay]);
+  }, [reading.day, isCompleted, nextDay, settings.autoComplete]);
 
   const handleToggle = useCallback(() => {
     const wasCompleted = isCompleted(reading.day);

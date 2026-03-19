@@ -31,7 +31,6 @@ const PLAYBACK_RATES = [1, 1.25, 1.5, 1.75, 2];
 
 // YT states
 const PLAYING = 1;
-const PAUSED = 2;
 const ENDED = 0;
 
 export default function YouTubePlayer({
@@ -107,6 +106,10 @@ export default function YouTubePlayer({
             }
             if (event.data === ENDED) {
               setIsPlaying(false);
+              if (!hasAutoCompleted && onComplete) {
+                setHasAutoCompleted(true);
+                onComplete();
+              }
             }
           },
         },
@@ -153,11 +156,6 @@ export default function YouTubePlayer({
         setDuration(dur);
         savePlaybackPosition(videoId, time, dur);
 
-        // 90% 이상 들으면 자동 완료
-        if (dur > 0 && time / dur >= 0.9 && !hasAutoCompleted && onComplete) {
-          setHasAutoCompleted(true);
-          onComplete();
-        }
       }, 1000);
     } else {
       if (intervalRef.current) {

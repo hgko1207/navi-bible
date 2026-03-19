@@ -52,7 +52,7 @@ function AutoIcon() {
 const themeIcons = { sun: SunIcon, moon: MoonIcon, auto: AutoIcon };
 
 export default function SettingsPage() {
-  const { settings, setTheme, setFontSize } = useSettings();
+  const { settings, setTheme, setFontSize, setAutoComplete } = useSettings();
   const [showPwaGuide, setShowPwaGuide] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -158,6 +158,35 @@ export default function SettingsPage() {
           <p className="content-text" style={{ color: "var(--text-secondary)" }}>
             성경은 처음부터 하나님의 창조를 선포하며 시작합니다. 하나님은 6일 동안 천지만물을 창조하셨습니다.
           </p>
+        </div>
+      </div>
+
+      {/* 자동 완료 */}
+      <div className="card-glass rounded-2xl p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="mb-1 text-[11px] font-bold uppercase tracking-[0.15em]" style={{ color: "var(--text-muted)" }}>
+              자동 완료
+            </h3>
+            <p className="text-[13px]" style={{ color: "var(--text-tertiary)" }}>
+              음원을 끝까지 재생하면 자동으로 완료 처리
+            </p>
+          </div>
+          <button
+            onClick={() => setAutoComplete(!settings.autoComplete)}
+            className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+              settings.autoComplete
+                ? "bg-amber-500"
+                : ""
+            }`}
+            style={{ background: settings.autoComplete ? undefined : "var(--border-input)" }}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                settings.autoComplete ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
         </div>
       </div>
 

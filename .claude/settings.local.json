@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/generate-readings.mjs)",
+      "Bash(node -e \":*)",
+      "Bash(npx next:*)",
+      "Bash(winget list:*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth status)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth login --hostname github.com --git-protocol https --web)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" repo create navi-bible --public --source=. --remote=origin --push)",
+      "Bash(npm i:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel login:*)",
+      "Bash(for f:*)",
+      "Bash(do head:*)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(cp \"d:/project/claude-toolkit/.claude/skills/subagent-creator/SKILL.md\" \"$HOME/.claude/skills/subagent-creator/SKILL.md\")",
+      "Bash(cp \"d:/project/claude-toolkit/.claude/skills/project-init/SKILL.md\" \"$HOME/.claude/skills/project-init/SKILL.md\")",
+      "Bash(cp \"d:/project/claude-toolkit/.claude/skills/crystalize/SKILL.md\" \"$HOME/.claude/skills/crystalize/SKILL.md\")",
+      "Bash(cp \"d:/project/claude-toolkit/.claude/agents/planner.md\" \"$HOME/.claude/agents/planner.md\")",
+      "Bash(cp \"d:/project/claude-toolkit/.claude/agents/implementer.md\" \"$HOME/.claude/agents/implementer.md\")",
+      "Bash(TOOLKIT=\"d:/project/claude-toolkit/.claude\")",
+      "Bash(HOME_CLAUDE=\"$HOME/.claude\")",
+      "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/SKILL.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/SKILL.md\")",
+      "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/references/available-tools.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/references/available-tools.md\")",
+      "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/references/examples.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/references/examples.md\")"
+    ]
+  }
+}

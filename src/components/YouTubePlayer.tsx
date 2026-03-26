@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPlaybackPosition, savePlaybackPosition } from "@/lib/storage";
+import { useBackgroundPlayback } from "@/hooks/useBackgroundPlayback";
 
 // YouTube IFrame API 타입 선언
 interface YTPlayer {
@@ -48,8 +49,12 @@ export default function YouTubePlayer({
   const [playbackRate, setPlaybackRate] = useState(1);
   const [isReady, setIsReady] = useState(false);
   const [hasAutoCompleted, setHasAutoCompleted] = useState(false);
+  const wasPlayingBeforeHidden = useRef(false);
 
   const playerId = `yt-player-${day}`;
+
+  // 백그라운드 재생 지원 (무음 오디오 keep-alive + Media Session API)
+  const { startKeepAlive, stopKeepAlive } = useBackgroundPlayback();
 
   // YouTube IFrame API 로드
   useEffect(() => {
@@ -168,6 +173,88 @@ export default function YouTubePlayer({
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isPlaying, videoId, hasAutoCompleted, onComplete]);
+
+  // 백그라운드 전환 시 자동 재개 + keep-alive
+  useEffect(() => {
+    if (isPlaying) {
+      startKeepAlive();
+    } else {
+      stopKeepAlive();
+    }
+  }, [isPlaying, startKeepAlive, stopKeepAlive]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!playerRef.current) return;
+
+      if (document.hidden) {
+        // 백그라운드로 전환됨 - 재생 중이었는지 기록
+        const state = playerRef.current.getPlayerState();
+        wasPlayingBeforeHidden.current = state === PLAYING;
+
+        if (wasPlayingBeforeHidden.current) {
+          // 백그라운드에서 재생 시도 (일부 브라우저에서 동작)
+          setTimeout(() => {
+            try {
+              playerRef.current?.playVideo();
+            } catch {
+              // YouTube가 차단하면 무시
+            }
+          }, 500);
+        }
+      } else {
+        // 포그라운드로 복귀 - 재생 중이었으면 자동 재개
+        if (wasPlayingBeforeHidden.current) {
+          setTimeout(() => {
+            try {
+              playerRef.current?.playVideo();
+            } catch {
+              // ignore
+            }
+          }, 300);
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  // Media Session API - 잠금화면/알림바 컨트롤
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !isReady) return;
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: `${day}일차 성경읽기`,
+      artist: "내비따라성경읽기",
+      album: "개역개정 음원",
+    });
+
+    navigator.mediaSession.setActionHandler("play", () => {
+      playerRef.current?.playVideo();
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+      playerRef.current?.pauseVideo();
+    });
+    navigator.mediaSession.setActionHandler("seekbackward", () => {
+      if (!playerRef.current) return;
+      const time = playerRef.current.getCurrentTime();
+      playerRef.current.seekTo(Math.max(0, time - 10), true);
+    });
+    navigator.mediaSession.setActionHandler("seekforward", () => {
+      if (!playerRef.current) return;
+      const time = playerRef.current.getCurrentTime();
+      const dur = playerRef.current.getDuration();
+      playerRef.current.seekTo(Math.min(dur, time + 30), true);
+    });
+
+    return () => {
+      navigator.mediaSession.setActionHandler("play", null);
+      navigator.mediaSession.setActionHandler("pause", null);
+      navigator.mediaSession.setActionHandler("seekbackward", null);
+      navigator.mediaSession.setActionHandler("seekforward", null);
+    };
+  }, [isReady, day]);
 
   const handlePlayPause = useCallback(() => {
     if (!playerRef.current) return;

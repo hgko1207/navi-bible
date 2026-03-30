@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPlaybackPosition, savePlaybackPosition } from "@/lib/storage";
-import { useBackgroundPlayback } from "@/hooks/useBackgroundPlayback";
 
 // YouTube IFrame API 타입 선언
 interface YTPlayer {
@@ -53,8 +52,6 @@ export default function YouTubePlayer({
 
   const playerId = `yt-player-${day}`;
 
-  // 백그라운드 재생 지원 (무음 오디오 keep-alive + Media Session API)
-  const { startKeepAlive, stopKeepAlive } = useBackgroundPlayback();
 
   // YouTube IFrame API 로드
   useEffect(() => {
@@ -174,15 +171,7 @@ export default function YouTubePlayer({
     };
   }, [isPlaying, videoId, hasAutoCompleted, onComplete]);
 
-  // 백그라운드 전환 시 자동 재개 + keep-alive
-  useEffect(() => {
-    if (isPlaying) {
-      startKeepAlive();
-    } else {
-      stopKeepAlive();
-    }
-  }, [isPlaying, startKeepAlive, stopKeepAlive]);
-
+  // 백그라운드 전환 시 자동 재개
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!playerRef.current) return;

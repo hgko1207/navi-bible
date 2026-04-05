@@ -23,7 +23,7 @@ interface YTPlayerEvent {
 
 interface YouTubePlayerProps {
   videoId: string;
-  day: number;
+  day: string;
   onComplete?: () => void;
 }
 

@@ -22,11 +22,11 @@ export default function DayCard({ reading, completed }: DayCardProps) {
         }}
       >
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-[15px] font-bold transition-all ${
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-bold transition-all ${
             completed
               ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-200/50 dark:shadow-emerald-900/50"
               : "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-700 dark:from-amber-500/20 dark:to-amber-600/20 dark:text-amber-400"
-          }`}
+          } ${reading.day.length > 2 ? "text-[12px]" : "text-[15px]"}`}
         >
           {completed ? (
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">

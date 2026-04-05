@@ -27,7 +27,9 @@
       "Bash(HOME_CLAUDE=\"$HOME/.claude\")",
       "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/SKILL.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/SKILL.md\")",
       "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/references/available-tools.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/references/available-tools.md\")",
-      "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/references/examples.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/references/examples.md\")"
+      "Bash(cp \"$TOOLKIT/skills/subagent-creator-pro/references/examples.md\" \"$HOME_CLAUDE/skills/subagent-creator-pro/references/examples.md\")",
+      "Bash(sort -t '일' -k1 -n)",
+      "Bash(grep -n \"오늘의 요약\\\\|border-b\\\\|border\" /d/project/2026/bible-reading/src/app/days/[day]/page.tsx)"
     ]
   }
 }

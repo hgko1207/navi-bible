@@ -24,7 +24,13 @@ export function getProgress(): ProgressData {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (!stored) return getDefaultProgress();
   try {
-    return JSON.parse(stored) as ProgressData;
+    const data = JSON.parse(stored) as ProgressData;
+    // 기존 number[] → string[] 마이그레이션
+    if (data.completedDays.some((d) => typeof d === "number")) {
+      data.completedDays = data.completedDays.map((d) => String(d));
+      saveProgress(data);
+    }
+    return data;
   } catch {
     return getDefaultProgress();
   }
@@ -35,7 +41,7 @@ export function saveProgress(data: ProgressData): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-export function toggleDayComplete(day: number): ProgressData {
+export function toggleDayComplete(day: string): ProgressData {
   const progress = getProgress();
   const index = progress.completedDays.indexOf(day);
   if (index === -1) {
@@ -47,7 +53,7 @@ export function toggleDayComplete(day: number): ProgressData {
   return progress;
 }
 
-export function markDayComplete(day: number): ProgressData {
+export function markDayComplete(day: string): ProgressData {
   const progress = getProgress();
   if (!progress.completedDays.includes(day)) {
     progress.completedDays.push(day);
@@ -56,18 +62,24 @@ export function markDayComplete(day: number): ProgressData {
   return progress;
 }
 
-export function markDaysCompleteUpTo(day: number): ProgressData {
+export function markDaysCompleteUpTo(
+  targetDay: string,
+  allDayIds: string[]
+): ProgressData {
   const progress = getProgress();
-  for (let d = 1; d <= day; d++) {
-    if (!progress.completedDays.includes(d)) {
-      progress.completedDays.push(d);
+  const targetIdx = allDayIds.indexOf(targetDay);
+  if (targetIdx === -1) return progress;
+  const daysToComplete = allDayIds.slice(0, targetIdx + 1);
+  for (const day of daysToComplete) {
+    if (!progress.completedDays.includes(day)) {
+      progress.completedDays.push(day);
     }
   }
   saveProgress(progress);
   return progress;
 }
 
-export function isDayCompleted(day: number): boolean {
+export function isDayCompleted(day: string): boolean {
   return getProgress().completedDays.includes(day);
 }
 
@@ -134,7 +146,14 @@ export function getReadingHistory(): ReadingHistory {
   const stored = localStorage.getItem(HISTORY_KEY);
   if (!stored) return getDefaultHistory();
   try {
-    return JSON.parse(stored) as ReadingHistory;
+    const history = JSON.parse(stored) as ReadingHistory;
+    // 기존 number[] → string[] 마이그레이션
+    for (const round of history.rounds) {
+      if (round.completedDays.some((d) => typeof d === "number")) {
+        round.completedDays = round.completedDays.map((d) => String(d));
+      }
+    }
+    return history;
   } catch {
     return getDefaultHistory();
   }
@@ -150,14 +169,14 @@ export function getCurrentRound(): ReadingRound | null {
   return history.rounds.find((r) => r.round === history.currentRound) ?? null;
 }
 
-export function completeCurrentRound(totalDays: number): ReadingHistory {
+export function completeCurrentRound(allDayIds: string[]): ReadingHistory {
   const history = getReadingHistory();
   const current = history.rounds.find(
     (r) => r.round === history.currentRound
   );
   if (current) {
     current.endDate = new Date().toISOString().split("T")[0];
-    current.completedDays = Array.from({ length: totalDays }, (_, i) => i + 1);
+    current.completedDays = [...allDayIds];
   }
 
   const newRound: ReadingRound = {

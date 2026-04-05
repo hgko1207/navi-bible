@@ -14,13 +14,13 @@ export function useProgress() {
     setProgress(getProgress());
   }, []);
 
-  const toggle = useCallback((day: number) => {
+  const toggle = useCallback((day: string) => {
     const updated = toggleDayComplete(day);
     setProgress({ ...updated });
   }, []);
 
   const isCompleted = useCallback(
-    (day: number) => progress.completedDays.includes(day),
+    (day: string) => progress.completedDays.includes(day),
     [progress.completedDays]
   );
 

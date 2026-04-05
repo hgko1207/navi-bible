@@ -43,19 +43,19 @@ function parseMdFile(content) {
   // Parse header: ## 월. 1일차 내비따라성경읽기 포인트 창1-19장
   // 또는: ## 월. 신약 49일차 내비따라성경읽기 포인트
   // 일차 정보가 있는 ## 줄을 찾음 (제목줄 "## 내비따라성경읽기 (1년3독)" 건너뜀)
-  const headerLine = lines.find((l) => l.startsWith("## ") && /\d+일차/.test(l));
+  const headerLine = lines.find((l) => l.startsWith("## ") && /\d+[AB]?일차/.test(l));
   if (!headerLine) throw new Error("헤더(## N일차)를 찾을 수 없습니다");
 
   // 포인트 뒤에 범위가 있는 경우와 없는 경우(다음 줄에 있음) 모두 지원
-  // "신약" 또는 "구약" 접두어가 있을 수 있음
+  // "신약" 또는 "구약" 접두어가 있을 수 있음, A/B 접미사 지원 (52A, 52B 등)
   const headerMatch = headerLine.match(
-    /^## (\S+)\.\s*(?:(?:신약|구약)\s+)?(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.*)$/
+    /^## (\S+)\.\s*(?:(?:신약|구약)\s+)?(\d+)([AB]?)일차\s*내비따라성경읽기\s*포인트\s*(.*)$/
   );
   if (!headerMatch) throw new Error(`헤더 파싱 실패: ${headerLine}`);
 
   const weekday = headerMatch[1];
-  const day = parseInt(headerMatch[2]);
-  let bibleRange = headerMatch[3].trim();
+  const day = headerMatch[2] + (headerMatch[3] || ""); // "52A", "52B", "49" 등
+  let bibleRange = headerMatch[4].trim();
   const headerIdx = lines.indexOf(headerLine);
 
   // bibleRange가 별도 줄에 있는 경우를 추적하기 위한 변수
@@ -154,7 +154,7 @@ function generateTs(readings) {
       : "";
 
     return `  {
-    day: ${r.day},
+    day: "${r.day}",
     weekday: "${r.weekday}",
     testament: "${r.testament}",
     bibleRange: "${r.bibleRange}",
@@ -174,7 +174,7 @@ export const readings: DailyReading[] = [
 ${entries.join(",\n")},
 ];
 
-export function getReadingByDay(day: number): DailyReading | undefined {
+export function getReadingByDay(day: string): DailyReading | undefined {
   return readings.find((r) => r.day === day);
 }
 
@@ -189,9 +189,12 @@ const files = fs
   .readdirSync(CONTENT_DIR)
   .filter((f) => f.endsWith("일차.md"))
   .sort((a, b) => {
-    const numA = parseInt(a.match(/(\d+)/)[1]);
-    const numB = parseInt(b.match(/(\d+)/)[1]);
-    return numA - numB;
+    const mA = a.match(/(\d+)([AB]?)일차/);
+    const mB = b.match(/(\d+)([AB]?)일차/);
+    const numA = parseInt(mA[1]);
+    const numB = parseInt(mB[1]);
+    if (numA !== numB) return numA - numB;
+    return (mA[2] || "").localeCompare(mB[2] || ""); // A < B
   });
 
 console.log(`📖 ${files.length}개의 말씀 파일을 발견했습니다.`);

@@ -4,7 +4,7 @@ import { DailyReading } from "@/lib/types";
 
 export const readings: DailyReading[] = [
   {
-    day: 1,
+    day: "1",
     weekday: "월",
     testament: "구약",
     bibleRange: "창1-19장",
@@ -34,7 +34,7 @@ export const readings: DailyReading[] = [
     youtubeId: "Ch_nEGrSa1E",
   },
   {
-    day: 2,
+    day: "2",
     weekday: "화",
     testament: "구약",
     bibleRange: "창20-38장",
@@ -60,7 +60,7 @@ export const readings: DailyReading[] = [
     youtubeId: "VkK4r7RL-h4",
   },
   {
-    day: 3,
+    day: "3",
     weekday: "수",
     testament: "구약",
     bibleRange: "창39-50장, 출1-11장",
@@ -87,7 +87,7 @@ export const readings: DailyReading[] = [
     youtubeId: "hwA1umLSofY",
   },
   {
-    day: 4,
+    day: "4",
     weekday: "목",
     testament: "구약",
     bibleRange: "출12-31장",
@@ -114,7 +114,7 @@ export const readings: DailyReading[] = [
     youtubeId: "EktRWgQG6BY",
   },
   {
-    day: 5,
+    day: "5",
     weekday: "금",
     testament: "구약",
     bibleRange: "출32-40장",
@@ -137,7 +137,7 @@ export const readings: DailyReading[] = [
     youtubeId: "p_D2EQhP93c",
   },
   {
-    day: 6,
+    day: "6",
     weekday: "월",
     testament: "구약",
     bibleRange: "민9:1-14, 민1-8장, 민9:15-23, 민10-20:1-13",
@@ -162,7 +162,7 @@ export const readings: DailyReading[] = [
     youtubeId: "uxRkGLYxApY",
   },
   {
-    day: 7,
+    day: "7",
     weekday: "화",
     testament: "구약",
     bibleRange: "민20:14-36장",
@@ -189,7 +189,7 @@ export const readings: DailyReading[] = [
     youtubeId: "7ybbSA3XrrY",
   },
   {
-    day: 8,
+    day: "8",
     weekday: "수",
     testament: "구약",
     bibleRange: "(레1-10장),(레16-17장), (레11-15장),(레18-22장)",
@@ -218,7 +218,7 @@ export const readings: DailyReading[] = [
     youtubeId: "yMNWybNf3bM",
   },
   {
-    day: 9,
+    day: "9",
     weekday: "목",
     testament: "구약",
     bibleRange: "(레23-27장), (신1-13장)",
@@ -239,7 +239,7 @@ export const readings: DailyReading[] = [
     youtubeId: "HCQ7PAhxQH0",
   },
   {
-    day: 10,
+    day: "10",
     weekday: "금",
     testament: "구약",
     bibleRange: "(신14-34장)",
@@ -260,7 +260,7 @@ export const readings: DailyReading[] = [
     youtubeId: "0NBLp78pRRE",
   },
   {
-    day: 11,
+    day: "11",
     weekday: "월",
     testament: "구약",
     bibleRange: "수1-24장",
@@ -289,7 +289,7 @@ export const readings: DailyReading[] = [
     youtubeId: "WwZqvozSz78",
   },
   {
-    day: 12,
+    day: "12",
     weekday: "화",
     testament: "구약",
     bibleRange: "삿1-16장",
@@ -310,7 +310,7 @@ export const readings: DailyReading[] = [
     youtubeId: "HG03DNLmz7c",
   },
   {
-    day: 13,
+    day: "13",
     weekday: "수",
     testament: "구약",
     bibleRange: "삿17-21장, (룻1-4장),  삼상1-8장",
@@ -336,7 +336,7 @@ export const readings: DailyReading[] = [
     youtubeId: "NMxTBAlcjqg",
   },
   {
-    day: 14,
+    day: "14",
     weekday: "목",
     testament: "구약",
     bibleRange: "삼상9-20장, (시59편)",
@@ -360,7 +360,7 @@ export const readings: DailyReading[] = [
     youtubeId: "yG1WZVHWCHI",
   },
   {
-    day: 15,
+    day: "15",
     weekday: "금",
     testament: "구약",
     bibleRange: "(시1-2, 4-6,8-17),    삼상21장, (시34, 56편), 삼상22장, (시52, 57편),    삼상23장, (시54편), 삼상24장, (시63, 142편)",
@@ -391,7 +391,7 @@ export const readings: DailyReading[] = [
     youtubeId: "Vc2iomf5lqg",
   },
   {
-    day: 16,
+    day: "16",
     weekday: "월",
     testament: "구약",
     bibleRange: "삼상25-26장, (시7편), 삼상27-31장, 삼하1:1-2:11, (시19-30편)",
@@ -416,7 +416,7 @@ export const readings: DailyReading[] = [
     youtubeId: "0tpRLFzonnU",
   },
   {
-    day: 17,
+    day: "17",
     weekday: "화",
     testament: "구약",
     bibleRange: "삼하2:12절-5장, (시31-41편)",
@@ -433,7 +433,7 @@ export const readings: DailyReading[] = [
     youtubeId: "WO9NmIGhrW4",
   },
   {
-    day: 18,
+    day: "18",
     weekday: "수",
     testament: "구약",
     bibleRange: "삼하6-7장, (시42-50편), 삼하8장, (시60편), 삼하9-12장, (시51편)",
@@ -459,7 +459,7 @@ export const readings: DailyReading[] = [
     youtubeId: "TFNEXP1Ac7I",
   },
   {
-    day: 19,
+    day: "19",
     weekday: "목",
     testament: "구약",
     bibleRange: "삼하13-19장, (시3편), 삼하20-24장, (시53, 55, 58, 61-62, 64-71편)",
@@ -486,7 +486,7 @@ export const readings: DailyReading[] = [
     youtubeId: "Me4HZPIvhKE",
   },
   {
-    day: 20,
+    day: "20",
     weekday: "금",
     testament: "구약",
     bibleRange: "왕상1-6장, (시72편), (잠1-15장)",
@@ -513,7 +513,7 @@ export const readings: DailyReading[] = [
     youtubeId: "vFcW1ap1fpI",
   },
   {
-    day: 21,
+    day: "21",
     weekday: "월",
     testament: "구약",
     bibleRange: "왕상7-11장, (잠16-31장)",
@@ -534,7 +534,7 @@ export const readings: DailyReading[] = [
     youtubeId: "IbwvMPozGhY",
   },
   {
-    day: 22,
+    day: "22",
     weekday: "화",
     testament: "구약",
     bibleRange: "(전1-12장), (아1-8장)",
@@ -554,7 +554,7 @@ export const readings: DailyReading[] = [
     youtubeId: "P2hAwq70fsY",
   },
   {
-    day: 23,
+    day: "23",
     weekday: "수",
     testament: "구약",
     bibleRange: "왕상 12-22장",
@@ -573,7 +573,7 @@ export const readings: DailyReading[] = [
     youtubeId: "-M6hJn6zrGQ",
   },
   {
-    day: 24,
+    day: "24",
     weekday: "목",
     testament: "구약",
     bibleRange: "왕하1-8:24, (옵1장) 왕하8:25-29, 왕하9-13장, (욜1-3장), 왕하14장",
@@ -605,7 +605,7 @@ export const readings: DailyReading[] = [
     youtubeId: "nWZZX5bjeus",
   },
   {
-    day: 25,
+    day: "25",
     weekday: "금",
     testament: "구약",
     bibleRange: "(호1-14장), (암1-9장), (욘1-4장), 왕하15:1-12",
@@ -636,7 +636,7 @@ export const readings: DailyReading[] = [
     youtubeId: "Rh1EitHahnc",
   },
   {
-    day: 26,
+    day: "26",
     weekday: "월",
     testament: "구약",
     bibleRange: "왕하15:13-20장, (사1-23장)",
@@ -661,7 +661,7 @@ export const readings: DailyReading[] = [
     youtubeId: "wTamxzGfnzs",
   },
   {
-    day: 27,
+    day: "27",
     weekday: "화",
     testament: "구약",
     bibleRange: "(사24-39장), (미1-7장)",
@@ -687,7 +687,7 @@ export const readings: DailyReading[] = [
     youtubeId: "aYXubxXpeEM4",
   },
   {
-    day: 28,
+    day: "28",
     weekday: "수",
     testament: "구약",
     bibleRange: "왕하21:1-18, (사40-54장)",
@@ -709,7 +709,7 @@ export const readings: DailyReading[] = [
     youtubeId: "-CnLs6UdN68",
   },
   {
-    day: 29,
+    day: "29",
     weekday: "목",
     testament: "구약",
     bibleRange: "(사55-66장),   왕하21:19-23:30, (나1-3장)",
@@ -740,7 +740,7 @@ export const readings: DailyReading[] = [
     youtubeId: "eYP1l3DI0OI",
   },
   {
-    day: 30,
+    day: "30",
     weekday: "금",
     testament: "구약",
     bibleRange: "(습1-3장), (렘1-6장, 11-12장, 7-10장)",
@@ -768,7 +768,7 @@ export const readings: DailyReading[] = [
     youtubeId: "STy0fwVggVE",
   },
   {
-    day: 31,
+    day: "31",
     weekday: "월",
     testament: "구약",
     bibleRange: "왕하23:31-34절, (렘21:11-22:19), 왕하23:35-24:5, (렘26장, 14-20장,  35장, 46-49:33절, 36장, 45장, 25장)",
@@ -791,7 +791,7 @@ export const readings: DailyReading[] = [
     youtubeId: "klo2Nicco8A",
   },
   {
-    day: 32,
+    day: "32",
     weekday: "화",
     testament: "구약",
     bibleRange: "(합1-3장), 왕하24:6-17절, (렘13장, 22:20절-24장), 왕하24:18-25장, (렘29-31장, 27-28장,49:34-39절, 50-51장)",
@@ -820,7 +820,7 @@ export const readings: DailyReading[] = [
     youtubeId: "ynPmweSTVKU",
   },
   {
-    day: 33,
+    day: "33",
     weekday: "수",
     testament: "구약",
     bibleRange: "(렘37-38장, 21:1-10, 렘32-34장,39,52,40-44장), (렘애가1-5장)",
@@ -850,7 +850,7 @@ export const readings: DailyReading[] = [
     youtubeId: "zDPkOJs59x4",
   },
   {
-    day: 34,
+    day: "34",
     weekday: "목",
     testament: "구약",
     bibleRange: "(단1-12장), (겔1-7장)",
@@ -883,7 +883,7 @@ export const readings: DailyReading[] = [
     youtubeId: "dSQqKcTEB6g",
   },
   {
-    day: 35,
+    day: "35",
     weekday: "금",
     testament: "구약",
     bibleRange: "(겔8-28장)",
@@ -910,7 +910,7 @@ export const readings: DailyReading[] = [
     youtubeId: "g3z6aebBnY4",
   },
   {
-    day: 36,
+    day: "36",
     weekday: "월",
     testament: "구약",
     bibleRange: "(겔29-48장)",
@@ -933,7 +933,7 @@ export const readings: DailyReading[] = [
     youtubeId: "265tIRnSdIc",
   },
   {
-    day: 37,
+    day: "37",
     weekday: "화",
     testament: "구약",
     bibleRange: "대상 1-9장",
@@ -953,7 +953,7 @@ export const readings: DailyReading[] = [
     youtubeId: "XyuOejhJkgw",
   },
   {
-    day: 38,
+    day: "38",
     weekday: "수",
     testament: "구약",
     bibleRange: "대상10-16장, (시105, 73-89편)",
@@ -973,7 +973,7 @@ export const readings: DailyReading[] = [
     youtubeId: "o3iy1OhIB6U",
   },
   {
-    day: 39,
+    day: "39",
     weekday: "목",
     testament: "구약",
     bibleRange: "대상17-22장 1절, (시90-104편, 106편)",
@@ -993,7 +993,7 @@ export const readings: DailyReading[] = [
     youtubeId: "9m3lDN1MP70",
   },
   {
-    day: 40,
+    day: "40",
     weekday: "금",
     testament: "구약",
     bibleRange: "대상22:2-26장, (시107-134편)",
@@ -1010,7 +1010,7 @@ export const readings: DailyReading[] = [
     youtubeId: "QrNpdn7sTBA",
   },
   {
-    day: 41,
+    day: "41",
     weekday: "월",
     testament: "구약",
     bibleRange: "대상27-29장,(시135-150편)",
@@ -1033,7 +1033,7 @@ export const readings: DailyReading[] = [
     youtubeId: "av6jar-qvYc",
   },
   {
-    day: 42,
+    day: "42",
     weekday: "화",
     testament: "구약",
     bibleRange: "대하1-20장",
@@ -1057,7 +1057,7 @@ export const readings: DailyReading[] = [
     youtubeId: "gl6IS6HLNXQ",
   },
   {
-    day: 43,
+    day: "43",
     weekday: "수",
     testament: "구약",
     bibleRange: "대하21-36:21",
@@ -1088,7 +1088,7 @@ export const readings: DailyReading[] = [
     youtubeId: "v_9XqQyauV0",
   },
   {
-    day: 44,
+    day: "44",
     weekday: "목",
     testament: "구약",
     bibleRange: "대하36:22-23절, 라1-6장, (학1-2장),(슥1-8장)",
@@ -1114,7 +1114,7 @@ export const readings: DailyReading[] = [
     youtubeId: "BvW7Wsdxvoc",
   },
   {
-    day: 45,
+    day: "45",
     weekday: "금",
     testament: "구약",
     bibleRange: "(슥9-14장), (더1-10장)",
@@ -1136,7 +1136,7 @@ export const readings: DailyReading[] = [
     youtubeId: "XjuYWhA1ngM",
   },
   {
-    day: 46,
+    day: "46",
     weekday: "월",
     testament: "구약",
     bibleRange: "라7-10장, 느1-13장,(말1-4장)",
@@ -1174,7 +1174,7 @@ export const readings: DailyReading[] = [
     youtubeId: "ipJ_Xz8VWCE",
   },
   {
-    day: 47,
+    day: "47",
     weekday: "화",
     testament: "구약",
     bibleRange: "(욥1-21장)",
@@ -1208,7 +1208,7 @@ export const readings: DailyReading[] = [
     youtubeId: "It0qRtC5SXY",
   },
   {
-    day: 48,
+    day: "48",
     weekday: "수",
     testament: "구약",
     bibleRange: "(욥22-42장)",
@@ -1245,7 +1245,7 @@ export const readings: DailyReading[] = [
     youtubeId: "at7h8Z8wZ0I",
   },
   {
-    day: 49,
+    day: "49",
     weekday: "월",
     testament: "신약",
     bibleRange: "눅1:1-38, 마1:18-25, 눅1:39-2:7, 마1:1-17, (눅3:23b-38), 눅2:8-38, 마2장, 눅2:39-3:18, (마3:1-12), (막1:1-8), (요1:1-28), 눅3:21-23a, (마3:13-17), (막1:9-11), 눅4:1-13, (마4:1-11), (막1:12-13), 요1:29-4:2, 눅3:19-20, (마4:12a), (막1:14a), 요4:3, (마4:12b), 요4:4-54, 눅4:14-30, 마4:13-17, (막1:14b-15), 눅5:1-11, (마4:18-22), (막1:16-20), 눅4:31-41, (마 8:14-17), (막1:21-34), 눅4:42-44, (마4:23-25),(막1:35-39), 눅5:17-32, (마9:1-13), (막2:1-17), 눅5:33-39, (마9:14-17), (막2:18-22), 요5장",
@@ -1268,7 +1268,7 @@ export const readings: DailyReading[] = [
     youtubeId: "61kg7y6JHQM",
   },
   {
-    day: 50,
+    day: "50",
     weekday: "화",
     testament: "신약",
     bibleRange: "눅6:1-11, (마12:1-21), (막2:23-3:6), 눅6:12-19, (막3:7-19), 눅6:20-49, (마5-7장), 눅5:12-16, 눅7:1-10, (마8:1-13), (막1:40-45), 눅7:11-35, (마11:2-19), 마11:20-30, 눅7:36-50, 마12:22-37, (막3:20-30), (눅11:14-28), 마12:38-45, 눅11:29-54, 눅8:1-18, (마13:1-53), (막4:1-34), 눅12:1-13:9, 눅13:18-21, 눅8:19-21, (마12:46-50), (막3:31-35), 막4:35-5:20, (마8:23-34), (눅8:22-39)",
@@ -1295,7 +1295,7 @@ export const readings: DailyReading[] = [
     youtubeId: "8DzNGntHGY0",
   },
   {
-    day: 51,
+    day: "51",
     weekday: "수",
     testament: "신약",
     bibleRange: "막5:21-43, (마9:18-26), (눅8:40-56), 마9:27-34, 막6:1-6a, (마13:54-58), 마9:35-11:1, (막6:6b-13), (눅9:1-6), 막6:14-29, (마14:1-12), (눅9:7-9), 막6:30, (눅9:10-11), 막6:31-44, (마14:13-21), (눅9:12-17), 요6:1-71, (마14:22-36), (막6:45-56), 마15:1-20, (막7:1-23), 마15:21-28, 막7:24-37, 마15:29-39, (막8:1-10), 마16:1-12, (막8:11-26), 마16:13-28, (막8:27-9:1), (눅9:18-27), 마17:1-13, (막9:2-13), (눅9:28-36), 막9:14-29, (마17:14-21), (눅9:37-43a), 막9:30-32, (마17:22-23), (눅9:43b-45), 마17:24-18장, (막9:33-50), (눅9:46-50), (눅17:1-10)",
@@ -1326,44 +1326,51 @@ https://youtu.be/QOUyxBeaCM8`,
     youtubeId: "QOUyxBeaCM8",
   },
   {
-    day: 52,
+    day: "52A",
     weekday: "목",
     testament: "신약",
-    bibleRange: "요7:1-10, 눅17:11-19, 눅9:51-10:16, (마8:18-22), 요7:11-8장, 눅10:17-11:13, 요9-11장, 마19:1-20:16, 눅13:10-16장, 눅17:20-18:30, (막10:1-31), 마20:17-28, (막10:32-45), (눅18:31-34), 마20:29-34, 눅18:35-19:27, (막10:46-52), 요12:1-11, (마26:6-13), (막14:3-9), 눅19:28-44, (막11:1-11), (마21:1-11), (요12:12-19), 막11:12-26, (마21:12-22), (눅19:45-48), 마21:23-23장, (막11:27-12장), (눅20:1-21:4)",
-    keyPoints: [
-      { verse: "요7:1-8장", summary: "초막절~수전절, 예루살렘 사역" },
-      { verse: "요9-11장", summary: "나사로 부활, 예수 체포령" },
-      { verse: "눅13:10-16장", summary: "비유를 통한 가르침 (잃은 양, 잃은 드라크마, 탕자)" },
-      { verse: "눅19:28-44", summary: "예루살렘 입성, 나귀를 타신 왕" },
-    ],
+    bibleRange: "요7:1-10, 눅17:11-19, 눅9:51-10:16, (마8:18-22), 요7:11-8장, 눅10:17-11:13, 요9-11장, 마19:1-20:16, 눅13:10-16장, 눅17:20-18:30, (막10:1-31)",
+    keyPoints: [],
     content: `<초막절~유월절(4)주간의 화요일까지, 약 6개월간 유대 지역>
 
   세 번째 유월절 지난 초막절 즈음, 오랜만에 예루살렘으로 향하시는 길에 10명의 문둥병자를 고치시고 사마리아 에 들어가셨는데 예수님을 냉대하니 제자들은 흥분합니다.
 
  예수님께서 이 세상에 오신 최종목표는 십자가와 부활입니다. 그 일을 위해 6개월 앞서 예루살렘에 올라가십니다.
 
- '70인의 제자'들을 먼저 요단 동편 베레아 지역에 보냅니다. 그 동안 갈릴리 순회전도를 통해 뿌려놓은 씨들이 희어져 추수할 영혼으로 많이 자랐기 때문입니다.
+ ‘70인의 제자’들을 먼저 요단 동편 베레아 지역에 보냅니다. 그 동안 갈릴리 순회전도를 통해 뿌려놓은 씨들이 희어져 추수할 영혼으로 많이 자랐기 때문입니다.
 
- 그 동안 예수께서는 예루살렘 성전에서 초막절(10월경)을 지내시면서 갈릴리에서 준비했던 '메시지, 설교'를 터뜨리십니다. "왜 나를 죽이려 하느냐?" "I am He!"
+ 그 동안 예수께서는 예루살렘 성전에서 초막절(10월경)을 지내시면서 갈릴리에서 준비했던 ‘메시지, 설교’를 터뜨리십니다. “왜 나를 죽이려 하느냐?” “I am He!”
 
-★ 초막절 이후, 예루살렘에서 70인 전도단의 활동을 보고받으시고 수전절(12월경)에 다시 예루살렘 성전에서 '나와 아버지는 하나다! 나는 하나님이다' 주장하십니다.
+★ 초막절 이후, 예루살렘에서 70인 전도단의 활동을 보고받으시고 수전절(12월경)에 다시 예루살렘 성전에서 ‘나와 아버지는 하나다! 나는 하나님이다’ 주장하십니다.
 
- 나사로의 사망 소식 나흘 후에 그를 살려내십니다. 나사로의 부활로 더욱 악에 받친 대제사장들과 바리새파 일당들은 공의회까지 소집해서 예수 체포령을 공공연히 내겁니다.
+ 나사로의 사망 소식 나흘 후에 그를 살려내십니다. 나사로의 부활로 더욱 악에 받친 대제사장들과 바리새파 일당들은 공의회까지 소집해서 예수 체포령을 공공연히 내겁니다.`,
+    reference: "신약읽기 내비게이션 p171-198",
+    youtubeUrl: "https://youtu.be/wQVNd7UMabs",
+    youtubeId: "wQVNd7UMabs",
+  },
+  {
+    day: "52B",
+    weekday: "금",
+    testament: "신약",
+    bibleRange: "마20:17—28, (막10:32-45), (눅18:31-34), 마20:29-34, 눅18:35-19:27, (막10:46-52), 요12:1-11, (마26:6-13), (막14:3-9), 눅19:28-44, (막11:1-11), (마21:1-11), (요12:12-19), 막11:12-26, (마21:12-22), (눅19:45-48), 마21:23-23장, (막11:27-12장), (눅20:1-21:4)",
+    keyPoints: [],
+    content: `<초막절~유월절(4)주간의 화요일까지, 약 6개월간 유대 지역>
 
- '예루살렘행!=십자가수난'입니다. 제자들은 동상이몽!...  요한과 야고보의 어머니는 예수께 아들들을 청탁하니 제자들이 분개합니다. 
+  
+ ‘예루살렘행!=십자가수난’입니다. 제자들은 동상이몽!...  요한과 야고보의 어머니는 예수께 아들들을 청탁하니 제자들이 분개합니다. 
 
 십자가에 죽으시기 일주일 전, 베다니의 나사로 동생 마리아가 예수께 향유를 부음으로 주님의 죽음을 예비하는 듯합니다.
 
 ★ 나귀를 타신 왕(슥9:9)은 생명을 주는 평화의 왕이십니다.
 
  화요일, 당대의 바리새파, 사두개파 신학자들과 최종 공개 신학논쟁을 하시며 시110편으로 KO패 시키시고 결론적인 심판(저주)발언을 하십니다.`,
-    reference: "신약읽기 내비게이션 p171-208",
-    youtubeUrl: "https://youtu.be/wQVNd7UMabs",
-    youtubeId: "wQVNd7UMabs",
+    reference: "신약읽기 내비게이션 p198-208",
+    youtubeUrl: "https://youtu.be/TocOpLfMCD0?feature=shared",
+    youtubeId: "TocOpLfMCD0",
   },
 ];
 
-export function getReadingByDay(day: number): DailyReading | undefined {
+export function getReadingByDay(day: string): DailyReading | undefined {
   return readings.find((r) => r.day === day);
 }
 

@@ -13,29 +13,29 @@ import { ReadingHistory } from "@/lib/types";
 import ProgressBar from "@/components/ProgressBar";
 import ReadingHistoryCard from "@/components/ReadingHistoryCard";
 
-interface DayRange {
-  start: number;
-  end: number;
-}
+// 완료된 일차를 readings 순서 기준으로 연속 구간 묶기
+function groupCompletedDays(
+  completedDays: string[]
+): { label: string }[] {
+  const sorted = completedDays
+    .map((day) => ({ day, idx: readings.findIndex((r) => r.day === day) }))
+    .filter(({ idx }) => idx !== -1)
+    .sort((a, b) => a.idx - b.idx);
 
-function groupConsecutiveDays(days: number[]): DayRange[] {
-  if (days.length === 0) return [];
-  const sorted = [...days].sort((a, b) => a - b);
-  const ranges: DayRange[] = [];
-  let start = sorted[0];
-  let end = sorted[0];
-
-  for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i] === end + 1) {
-      end = sorted[i];
+  const groups: { start: string; end: string; startIdx: number; endIdx: number }[] = [];
+  for (const { day, idx } of sorted) {
+    const last = groups[groups.length - 1];
+    if (last && idx === last.endIdx + 1) {
+      last.end = day;
+      last.endIdx = idx;
     } else {
-      ranges.push({ start, end });
-      start = sorted[i];
-      end = sorted[i];
+      groups.push({ start: day, end: day, startIdx: idx, endIdx: idx });
     }
   }
-  ranges.push({ start, end });
-  return ranges;
+
+  return groups.map(({ start, end }) => ({
+    label: start === end ? `${start}일차` : `${start}~${end}일차`,
+  }));
 }
 
 export default function ProgressPage() {
@@ -49,13 +49,14 @@ export default function ProgressPage() {
     setHistory(getReadingHistory());
   }, [progress.completedDays.length]);
 
+  const allDayIds = readings.map((r) => r.day);
   const totalDays = readings.length;
   const completedCount = progress.completedDays.length;
 
   const handleBulkComplete = () => {
-    const dayNum = Number(bulkDay);
-    if (!dayNum || dayNum < 1 || dayNum > totalDays) return;
-    markDaysCompleteUpTo(dayNum);
+    const trimmed = bulkDay.trim();
+    if (!trimmed || !allDayIds.includes(trimmed)) return;
+    markDaysCompleteUpTo(trimmed, allDayIds);
     syncRoundProgress();
     window.dispatchEvent(new Event("storage"));
     setBulkDone(true);
@@ -78,11 +79,13 @@ export default function ProgressPage() {
 
   const handleCompleteRound = () => {
     if (confirm("축하합니다! 완독을 완료하고 새 독서를 시작하시겠습니까?")) {
-      const updated = completeCurrentRound(totalDays);
+      const updated = completeCurrentRound(allDayIds);
       setHistory(updated);
       window.location.reload();
     }
   };
+
+  const dayGroups = groupCompletedDays(progress.completedDays);
 
   return (
     <div className="space-y-5">
@@ -144,14 +147,12 @@ export default function ProgressPage() {
           현재 진도 설정
         </h3>
         <p className="mb-3 text-[13px]" style={{ color: "var(--text-tertiary)" }}>
-          입력한 일차까지 모두 완료 처리합니다.
+          입력한 일차까지 모두 완료 처리합니다. (예: 48, 52A)
         </p>
         <div className="flex gap-2">
           <input
-            type="number"
-            min={1}
-            max={totalDays}
-            placeholder={`1 ~ ${totalDays}`}
+            type="text"
+            placeholder={`1 ~ ${allDayIds[allDayIds.length - 1]}`}
             value={bulkDay}
             onChange={(e) => setBulkDay(e.target.value)}
             className="h-11 w-full flex-1 rounded-xl border px-4 text-[15px] font-medium outline-none transition-all focus:border-amber-400 focus:ring-2 focus:ring-amber-100/50 dark:focus:ring-amber-900/50"
@@ -159,7 +160,7 @@ export default function ProgressPage() {
           />
           <button
             onClick={handleBulkComplete}
-            disabled={!bulkDay || Number(bulkDay) < 1 || Number(bulkDay) > totalDays}
+            disabled={!bulkDay.trim() || !allDayIds.includes(bulkDay.trim())}
             className="h-11 shrink-0 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-5 text-sm font-bold text-white shadow-md shadow-amber-200/30 transition-all hover:shadow-lg active:scale-[0.97] disabled:opacity-40 disabled:shadow-none"
           >
             {bulkDone ? "완료!" : "적용"}
@@ -188,18 +189,16 @@ export default function ProgressPage() {
           </div>
         ) : (
           <div className="flex flex-wrap gap-2">
-            {groupConsecutiveDays(progress.completedDays).map((range) => (
+            {dayGroups.map((group) => (
               <span
-                key={`${range.start}-${range.end}`}
+                key={group.label}
                 className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
                 style={{ background: "var(--emerald-soft-bg)" }}
               >
                 <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                 </svg>
-                {range.start === range.end
-                  ? `${range.start}일차`
-                  : `${range.start}~${range.end}일차`}
+                {group.label}
               </span>
             ))}
           </div>

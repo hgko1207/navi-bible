@@ -6,7 +6,7 @@ import Link from "next/link";
 
 interface SearchBarProps {
   readings: DailyReading[];
-  completedDays: number[];
+  completedDays: string[];
 }
 
 export default function SearchBar({ readings, completedDays }: SearchBarProps) {

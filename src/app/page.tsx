@@ -12,7 +12,7 @@ import CheckButton from "@/components/CheckButton";
 import TTSPlayer from "@/components/TTSPlayer";
 import NextDayToast from "@/components/NextDayToast";
 
-function getNextReading(completedDays: number[]) {
+function getNextReading(completedDays: string[]) {
   const unread = readings.find((r) => !completedDays.includes(r.day));
   return unread ?? readings[readings.length - 1];
 }
@@ -21,10 +21,11 @@ export default function HomePage() {
   const { isCompleted, toggle, progress } = useProgress();
   const { settings } = useSettings();
   const reading = getNextReading(progress.completedDays);
+  const readingIdx = readings.indexOf(reading);
   const completedCount = progress.completedDays.length;
   const totalDays = readings.length;
-  const prevDay = readings.find((r) => r.day === reading.day - 1);
-  const nextDay = readings.find((r) => r.day === reading.day + 1);
+  const prevDay = readingIdx > 0 ? readings[readingIdx - 1] : null;
+  const nextDay = readingIdx >= 0 && readingIdx < readings.length - 1 ? readings[readingIdx + 1] : null;
   const [showNextToast, setShowNextToast] = useState(false);
 
   const handleAutoComplete = useCallback(() => {
@@ -69,7 +70,7 @@ export default function HomePage() {
             <h2 className="mt-4 text-[32px] font-extrabold leading-none tracking-tight text-white">
               {reading.day}일차
             </h2>
-            <p className="mt-1 text-lg font-medium text-white/80">
+            <p className="mt-1 text-sm font-medium text-white/70 line-clamp-2">
               {reading.weekday}요일 · {reading.bibleRange}
             </p>
 
@@ -110,14 +111,16 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 핵심 포인트 */}
-      <section>
-        <KeyPoints points={reading.keyPoints} />
-      </section>
+      {/* 핵심 포인트 - 있을 때만 표시 */}
+      {reading.keyPoints.length > 0 && (
+        <section>
+          <KeyPoints points={reading.keyPoints} />
+        </section>
+      )}
 
       {/* 요약 본문 */}
       <section className="card-glass overflow-hidden rounded-2xl">
-        <div className="flex items-center justify-between border-b border-stone-100/80 dark:border-stone-800/80 px-5 py-3.5">
+        <div className="flex items-center justify-between border-b px-5 py-3.5" style={{ borderColor: "var(--border-input)" }}>
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/10">
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-amber-600" fill="none" stroke="currentColor" strokeWidth={2}>

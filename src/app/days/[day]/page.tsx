@@ -15,25 +15,29 @@ import NextDayToast from "@/components/NextDayToast";
 
 export default function DayDetailPage() {
   const params = useParams<{ day: string }>();
-  const dayNum = Number(params.day);
+  const dayId = params.day;
   const { isCompleted, toggle } = useProgress();
   const { settings } = useSettings();
 
-  const reading = getReadingByDay(dayNum);
+  const reading = getReadingByDay(dayId);
+  const readingIdx = reading ? readings.indexOf(reading) : -1;
+  const nextDay = readingIdx >= 0 && readingIdx < readings.length - 1 ? readings[readingIdx + 1] : null;
+  const prevDay = readingIdx > 0 ? readings[readingIdx - 1] : null;
+
   const [bulkDone, setBulkDone] = useState(false);
   const [showNextToast, setShowNextToast] = useState(false);
 
+  const allDayIds = readings.map((r) => r.day);
+
   const handleBulkComplete = useCallback(() => {
-    if (reading && dayNum > 1) {
-      markDaysCompleteUpTo(dayNum);
+    if (reading && readingIdx > 0) {
+      markDaysCompleteUpTo(reading.day, allDayIds);
       syncRoundProgress();
       window.dispatchEvent(new Event("storage"));
       setBulkDone(true);
       setTimeout(() => setBulkDone(false), 2000);
     }
-  }, [reading, dayNum]);
-
-  const nextDay = reading ? readings.find((r) => r.day === dayNum + 1) : null;
+  }, [reading, readingIdx, allDayIds]);
 
   const handleAutoComplete = useCallback(() => {
     if (!settings.autoComplete) return;
@@ -78,8 +82,6 @@ export default function DayDetailPage() {
     );
   }
 
-  const prevDay = readings.find((r) => r.day === dayNum - 1);
-
   return (
     <div className="space-y-5">
       {/* 상단 정보 히어로 */}
@@ -104,7 +106,8 @@ export default function DayDetailPage() {
             <h2 className="mt-3 text-[32px] font-extrabold leading-none tracking-tight text-white">
               {reading.day}일차
             </h2>
-            <p className="mt-1.5 text-lg font-medium text-white/70">
+            {/* bibleRange: 길 경우 2줄로 제한 */}
+            <p className="mt-1.5 text-sm font-medium text-white/60 line-clamp-2">
               {reading.weekday}요일 · {reading.bibleRange}
             </p>
           </div>
@@ -128,14 +131,19 @@ export default function DayDetailPage() {
         />
       </section>
 
-      {/* 핵심 포인트 */}
-      <section>
-        <KeyPoints points={reading.keyPoints} />
-      </section>
+      {/* 핵심 포인트 - 있을 때만 표시 */}
+      {reading.keyPoints.length > 0 && (
+        <section>
+          <KeyPoints points={reading.keyPoints} />
+        </section>
+      )}
 
       {/* 요약 본문 */}
       <section className="card-glass overflow-hidden rounded-2xl">
-        <div className="flex items-center justify-between border-b border-stone-100/80 px-5 py-3.5">
+        <div
+          className="flex items-center justify-between border-b px-5 py-3.5"
+          style={{ borderColor: "var(--border-input)" }}
+        >
           <div className="flex items-center gap-2">
             <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-500/10">
               <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 text-amber-600" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -168,13 +176,13 @@ export default function DayDetailPage() {
       />
 
       {/* 여기까지 모두 완료 */}
-      {dayNum > 1 && (
+      {readingIdx > 0 && (
         <button
           onClick={handleBulkComplete}
           className="w-full rounded-2xl border py-3.5 text-sm font-semibold shadow-sm transition-all hover:border-amber-300 hover:text-amber-600 active:scale-[0.98]"
           style={{ borderColor: "var(--border-input)", background: "var(--bg-card-solid)", color: "var(--text-tertiary)" }}
         >
-          {bulkDone ? "완료되었습니다!" : `1일차 ~ ${dayNum}일차 모두 완료`}
+          {bulkDone ? "완료되었습니다!" : `1일차 ~ ${reading.day}일차 모두 완료`}
         </button>
       )}
 

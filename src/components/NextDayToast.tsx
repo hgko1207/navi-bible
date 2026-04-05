@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface NextDayToastProps {
-  nextDay: number;
+  nextDay: string;
   onDismiss: () => void;
 }
 

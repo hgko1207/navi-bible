@@ -6,7 +6,7 @@ export interface KeyPoint {
 export type Testament = "구약" | "신약";
 
 export interface DailyReading {
-  day: number;
+  day: string; // "1", "52A", "52B" 등
   weekday: string;
   testament: Testament;
   bibleRange: string;
@@ -18,7 +18,7 @@ export interface DailyReading {
 }
 
 export interface ProgressData {
-  completedDays: number[];
+  completedDays: string[];
   startDate: string;
 }
 
@@ -33,7 +33,7 @@ export interface ReadingRound {
   round: number;
   startDate: string;
   endDate: string | null;
-  completedDays: number[];
+  completedDays: string[];
 }
 
 export interface ReadingHistory {

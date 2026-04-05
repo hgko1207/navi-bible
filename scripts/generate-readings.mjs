@@ -41,29 +41,35 @@ function parseMdFile(content) {
   const lines = content.split("\n");
 
   // Parse header: ## 월. 1일차 내비따라성경읽기 포인트 창1-19장
+  // 또는: ## 월. 신약 49일차 내비따라성경읽기 포인트
   // 일차 정보가 있는 ## 줄을 찾음 (제목줄 "## 내비따라성경읽기 (1년3독)" 건너뜀)
   const headerLine = lines.find((l) => l.startsWith("## ") && /\d+일차/.test(l));
   if (!headerLine) throw new Error("헤더(## N일차)를 찾을 수 없습니다");
 
   // 포인트 뒤에 범위가 있는 경우와 없는 경우(다음 줄에 있음) 모두 지원
+  // "신약" 또는 "구약" 접두어가 있을 수 있음
   const headerMatch = headerLine.match(
-    /^## (\S+)\.\s*(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.*)$/
+    /^## (\S+)\.\s*(?:(?:신약|구약)\s+)?(\d+)일차\s*내비따라성경읽기\s*포인트\s*(.*)$/
   );
   if (!headerMatch) throw new Error(`헤더 파싱 실패: ${headerLine}`);
 
   const weekday = headerMatch[1];
   const day = parseInt(headerMatch[2]);
   let bibleRange = headerMatch[3].trim();
+  const headerIdx = lines.indexOf(headerLine);
+
+  // bibleRange가 별도 줄에 있는 경우를 추적하기 위한 변수
+  let bibleRangeLineIdx = -1;
 
   // 헤더에 범위가 없으면 다음 비어있지 않은 줄에서 가져옴
   if (!bibleRange) {
-    const headerIdx = lines.indexOf(headerLine);
     for (let i = headerIdx + 1; i < lines.length; i++) {
       const line = lines[i].trim();
       if (line && !line.startsWith("#")) {
         // ⇒가 포함된 줄이면 키포인트이므로 그 앞 줄이 범위
         if (line.includes("⇒")) break;
         bibleRange = line;
+        bibleRangeLineIdx = i;
         break;
       }
     }
@@ -81,12 +87,23 @@ function parseMdFile(content) {
     }
   }
 
-  // Find content: between key points and ▶ reference line
+  // Find content: between key points (or bibleRange) and ▶ reference line
   const lastKeyPointIdx = lines.findLastIndex((l) => l.includes("⇒"));
   const refLineIdx = lines.findIndex((l) => l.startsWith("▶") && l.includes("내비게이션"));
 
+  // 키포인트가 없으면 bibleRange 줄 다음부터 시작
+  // bibleRange가 헤더 안에 있으면 headerIdx 다음부터
+  let contentStartIdx;
+  if (lastKeyPointIdx !== -1) {
+    contentStartIdx = lastKeyPointIdx + 1;
+  } else if (bibleRangeLineIdx !== -1) {
+    contentStartIdx = bibleRangeLineIdx + 1;
+  } else {
+    contentStartIdx = headerIdx + 1;
+  }
+
   const contentLines = lines
-    .slice(lastKeyPointIdx + 1, refLineIdx !== -1 ? refLineIdx : undefined)
+    .slice(contentStartIdx, refLineIdx !== -1 ? refLineIdx : undefined)
     .join("\n")
     .trim();
 
@@ -130,18 +147,18 @@ function escapeForTemplate(str) {
 
 function generateTs(readings) {
   const entries = readings.map((r) => {
-    const keyPointsStr = r.keyPoints
-      .map((kp) => `      { verse: "${kp.verse}", summary: "${kp.summary}" }`)
-      .join(",\n");
+    const keyPointsStr = r.keyPoints.length > 0
+      ? "\n" + r.keyPoints
+          .map((kp) => `      { verse: "${kp.verse}", summary: "${kp.summary}" }`)
+          .join(",\n") + ",\n    "
+      : "";
 
     return `  {
     day: ${r.day},
     weekday: "${r.weekday}",
     testament: "${r.testament}",
     bibleRange: "${r.bibleRange}",
-    keyPoints: [
-${keyPointsStr},
-    ],
+    keyPoints: [${keyPointsStr}],
     content: \`${escapeForTemplate(r.content)}\`,
     reference: "${r.reference}",
     youtubeUrl: "${r.youtubeUrl}",

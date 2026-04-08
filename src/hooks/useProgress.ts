@@ -12,6 +12,15 @@ export function useProgress() {
 
   useEffect(() => {
     setProgress(getProgress());
+
+    // markDayComplete 등 외부에서 localStorage를 직접 수정할 때 React 상태 동기화
+    const handleStorage = () => setProgress(getProgress());
+    window.addEventListener("storage-update", handleStorage);
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage-update", handleStorage);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
 
   const toggle = useCallback((day: string) => {

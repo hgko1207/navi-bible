@@ -58,7 +58,7 @@ export default function ProgressPage() {
     if (!trimmed || !allDayIds.includes(trimmed)) return;
     markDaysCompleteUpTo(trimmed, allDayIds);
     syncRoundProgress();
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("storage-update"));
     setBulkDone(true);
     setTimeout(() => setBulkDone(false), 2000);
     setBulkDay("");

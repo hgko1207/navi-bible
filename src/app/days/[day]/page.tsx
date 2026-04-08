@@ -33,7 +33,7 @@ export default function DayDetailPage() {
     if (reading && readingIdx > 0) {
       markDaysCompleteUpTo(reading.day, allDayIds);
       syncRoundProgress();
-      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("storage-update"));
       setBulkDone(true);
       setTimeout(() => setBulkDone(false), 2000);
     }
@@ -44,7 +44,7 @@ export default function DayDetailPage() {
     if (reading && !isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
-      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("storage-update"));
       if (nextDay) {
         setShowNextToast(true);
       }

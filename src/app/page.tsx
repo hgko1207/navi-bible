@@ -33,7 +33,7 @@ export default function HomePage() {
     if (!isCompleted(reading.day)) {
       markDayComplete(reading.day);
       syncRoundProgress();
-      window.dispatchEvent(new Event("storage"));
+      window.dispatchEvent(new Event("storage-update"));
       if (nextDay) {
         setShowNextToast(true);
       }

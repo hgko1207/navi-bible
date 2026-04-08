@@ -11,7 +11,7 @@ interface NextDayToastProps {
 export default function NextDayToast({ nextDay, onDismiss }: NextDayToastProps) {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(8);
 
   useEffect(() => {
     // Animate in

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 interface CheckButtonProps {
   checked: boolean;
   onToggle: () => void;
@@ -11,6 +13,18 @@ export default function CheckButton({
   onToggle,
   label,
 }: CheckButtonProps) {
+  const [justChecked, setJustChecked] = useState(false);
+  const prevChecked = useRef(checked);
+
+  useEffect(() => {
+    if (!prevChecked.current && checked) {
+      setJustChecked(true);
+      const t = setTimeout(() => setJustChecked(false), 600);
+      return () => clearTimeout(t);
+    }
+    prevChecked.current = checked;
+  }, [checked]);
+
   return (
     <button
       onClick={onToggle}
@@ -19,6 +33,7 @@ export default function CheckButton({
           ? "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/50"
           : "card-glass text-stone-500 dark:text-stone-400 hover:border-amber-300/60 hover:text-amber-600"
       }`}
+      style={justChecked ? { animation: "checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)" } : undefined}
     >
       <span
         className={`flex h-6 w-6 items-center justify-center rounded-full transition-all ${

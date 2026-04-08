@@ -102,6 +102,13 @@ main {
   100% { background-position: 200% 0; }
 }
 
+@keyframes checkPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  70% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
 main > div {
   animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

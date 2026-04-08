@@ -12,6 +12,7 @@ import KeyPoints from "@/components/KeyPoints";
 import CheckButton from "@/components/CheckButton";
 import TTSPlayer from "@/components/TTSPlayer";
 import NextDayToast from "@/components/NextDayToast";
+import ContentRenderer from "@/components/ContentRenderer";
 
 export default function DayDetailPage() {
   const params = useParams<{ day: string }>();
@@ -155,11 +156,7 @@ export default function DayDetailPage() {
           <TTSPlayer text={reading.content} />
         </div>
         <div className="px-5 py-4">
-          <div className="content-text space-y-5" style={{ color: "var(--text-secondary)" }}>
-            {reading.content.split("\n\n").map((paragraph, i) => (
-              <p key={i}>{paragraph}</p>
-            ))}
-          </div>
+          <ContentRenderer content={reading.content} />
           <div className="mt-5 flex items-center gap-2 rounded-xl px-3.5 py-2.5" style={{ background: "var(--amber-soft-bg)" }}>
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />

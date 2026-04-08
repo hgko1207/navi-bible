@@ -331,10 +331,11 @@ export default function YouTubePlayer({
 
       {/* 커스텀 컨트롤 */}
       {isReady && (
-        <div className="rounded-2xl bg-white p-3 shadow-sm">
+        <div className="rounded-2xl p-3 shadow-sm" style={{ background: "var(--bg-card-solid)" }}>
           {/* 프로그레스 바 */}
           <div
-            className="group relative h-2 cursor-pointer rounded-full bg-stone-200"
+            className="group relative h-2 cursor-pointer rounded-full"
+            style={{ background: "var(--border-input)" }}
             onClick={handleProgressClick}
           >
             <div
@@ -342,13 +343,13 @@ export default function YouTubePlayer({
               style={{ width: `${progressPercent}%` }}
             />
             <div
-              className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-amber-500 bg-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
-              style={{ left: `calc(${progressPercent}% - 8px)` }}
+              className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-amber-500 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+              style={{ background: "var(--bg-card-solid)", left: `calc(${progressPercent}% - 8px)` }}
             />
           </div>
 
           {/* 시간 표시 */}
-          <div className="mt-1.5 flex justify-between text-[11px] text-stone-400">
+          <div className="mt-1.5 flex justify-between text-[11px]" style={{ color: "var(--text-muted)" }}>
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
@@ -357,20 +358,23 @@ export default function YouTubePlayer({
           <div className="mt-2 flex items-center justify-center gap-4">
             {/* 10초 뒤로 */}
             <button
+              type="button"
               onClick={handleSeekBack}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 active:bg-stone-200"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors active:scale-95"
+              style={{ color: "var(--text-tertiary)" }}
               title="10초 뒤로"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
                 <path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
               </svg>
-              <span className="absolute mt-6 text-[9px]">10</span>
+              <span className="absolute bottom-0.5 text-[9px] font-semibold">10</span>
             </button>
 
             {/* 재생/일시정지 */}
             <button
+              type="button"
               onClick={handlePlayPause}
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-600 text-white shadow-lg shadow-amber-200/50 transition-all hover:bg-amber-700 active:scale-95"
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-600 text-white shadow-lg shadow-amber-200/50 transition-all hover:bg-amber-700 active:scale-95 dark:shadow-amber-900/40"
             >
               {isPlaying ? (
                 <svg viewBox="0 0 24 24" className="h-7 w-7" fill="currentColor">
@@ -385,14 +389,16 @@ export default function YouTubePlayer({
 
             {/* 30초 앞으로 */}
             <button
+              type="button"
               onClick={handleSeekForward}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-stone-500 transition-colors hover:bg-stone-100 active:bg-stone-200"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors active:scale-95"
+              style={{ color: "var(--text-tertiary)" }}
               title="30초 앞으로"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
                 <path d="M11.5 8c2.65 0 5.05.99 6.9 2.6L22 7v9h-9l3.62-3.62C15.23 11.22 13.46 10.5 11.5 10.5c-3.54 0-6.55 2.31-7.6 5.5L1.53 15.22C2.92 11.03 6.85 8 11.5 8z" />
               </svg>
-              <span className="absolute mt-6 text-[9px]">30</span>
+              <span className="absolute bottom-0.5 text-[9px] font-semibold">30</span>
             </button>
           </div>
 
@@ -400,24 +406,30 @@ export default function YouTubePlayer({
           <div className="relative mt-2 flex flex-col items-center">
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={handleRateDecrease}
                 disabled={PLAYBACK_RATES.indexOf(playbackRate) === 0}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-500"
+                className="flex h-11 w-11 items-center justify-center rounded-full border transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30"
+                style={{ borderColor: "var(--border-input)", color: "var(--text-tertiary)" }}
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                   <path d="M19 13H5v-2h14v2z" />
                 </svg>
               </button>
               <button
+                type="button"
                 onClick={() => setShowSpeedPanel(!showSpeedPanel)}
-                className="min-w-[72px] rounded-full border border-stone-200 px-3 py-1.5 text-xs font-semibold text-stone-600 transition-colors hover:border-amber-300 hover:text-amber-700"
+                className="min-w-[72px] rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:border-amber-300 hover:text-amber-700"
+                style={{ borderColor: "var(--border-input)", color: "var(--text-secondary)" }}
               >
                 {playbackRate}x 속도
               </button>
               <button
+                type="button"
                 onClick={handleRateIncrease}
                 disabled={PLAYBACK_RATES.indexOf(playbackRate) === PLAYBACK_RATES.length - 1}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-500 transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30 disabled:hover:border-stone-200 disabled:hover:text-stone-500"
+                className="flex h-11 w-11 items-center justify-center rounded-full border transition-colors hover:border-amber-300 hover:text-amber-700 disabled:opacity-30"
+                style={{ borderColor: "var(--border-input)", color: "var(--text-tertiary)" }}
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
                   <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -427,16 +439,18 @@ export default function YouTubePlayer({
 
             {/* 속도 선택 패널 */}
             {showSpeedPanel && (
-              <div className="mt-2 flex flex-wrap justify-center gap-1.5 rounded-xl bg-stone-50 p-2">
+              <div className="mt-2 flex flex-wrap justify-center gap-1.5 rounded-xl p-2" style={{ background: "var(--bg-secondary)" }}>
                 {PLAYBACK_RATES.map((rate) => (
                   <button
+                    type="button"
                     key={rate}
                     onClick={() => handleRateSelect(rate)}
                     className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                       rate === playbackRate
                         ? "bg-amber-600 text-white shadow-sm"
-                        : "text-stone-500 hover:bg-stone-200"
+                        : "hover:bg-amber-100 hover:text-amber-700"
                     }`}
+                    style={rate !== playbackRate ? { color: "var(--text-tertiary)" } : undefined}
                   >
                     {rate}x
                   </button>
@@ -447,7 +461,7 @@ export default function YouTubePlayer({
 
           {/* 이어듣기 안내 */}
           {currentTime > 10 && !isPlaying && (
-            <p className="mt-2 text-center text-[11px] text-amber-600">
+            <p className="mt-2 text-center text-[11px] text-amber-600 dark:text-amber-400">
               {formatTime(currentTime)}부터 이어듣기 가능
             </p>
           )}

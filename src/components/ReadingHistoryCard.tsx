@@ -31,8 +31,8 @@ export default function ReadingHistoryCard({
               key={round.round}
               className={`rounded-xl border p-3.5 ${
                 isComplete
-                  ? "border-emerald-200 bg-emerald-50/50"
-                  : "border-amber-200 bg-amber-50/30"
+                  ? "border-emerald-200 bg-emerald-50/50 dark:border-emerald-800/50 dark:bg-emerald-900/20"
+                  : "border-amber-200 bg-amber-50/30 dark:border-amber-800/50 dark:bg-amber-900/20"
               }`}
             >
               <div className="flex items-center justify-between">
@@ -46,21 +46,21 @@ export default function ReadingHistoryCard({
                   >
                     {round.round}
                   </span>
-                  <span className="text-sm font-semibold text-stone-700">
+                  <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
                     {round.round}독
                   </span>
                 </div>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                     isComplete
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-amber-100 text-amber-700"
+                      ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+                      : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400"
                   }`}
                 >
                   {isComplete ? "완독" : `진행중 ${progress}%`}
                 </span>
               </div>
-              <div className="mt-2 text-xs text-stone-400">
+              <div className="mt-2 text-xs text-stone-400 dark:text-stone-500">
                 {round.startDate}
                 {isComplete ? ` ~ ${round.endDate}` : " ~ 진행중"}
               </div>

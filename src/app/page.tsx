@@ -79,10 +79,10 @@ export default function HomePage() {
                 {reading.testament}
               </span>
               <div className="flex items-center gap-1.5">
-                <div className="h-1 flex-1 w-16 rounded-full bg-white/20">
+                <div className="h-1 w-16 flex-1 overflow-hidden rounded-full bg-white/20">
                   <div
-                    className="h-full rounded-full bg-white/70 transition-all duration-700"
-                    style={{ width: `${totalDays > 0 ? (completedCount / totalDays) * 100 : 0}%` }}
+                    className="h-full w-full origin-left bg-white/70 transition-transform duration-700"
+                    style={{ transform: `scaleX(${totalDays > 0 ? (completedCount / totalDays) : 0})` }}
                   />
                 </div>
                 <span className="text-[11px] font-medium text-white/60">

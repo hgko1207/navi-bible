@@ -16,8 +16,8 @@ export default function CheckButton({
       onClick={onToggle}
       className={`group flex w-full items-center justify-center gap-2.5 rounded-2xl py-4 text-base font-semibold transition-all duration-300 active:scale-[0.97] ${
         checked
-          ? "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50"
-          : "card-glass text-stone-500 hover:border-amber-300/60 hover:text-amber-600"
+          ? "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200/50 dark:shadow-emerald-900/50"
+          : "card-glass text-stone-500 dark:text-stone-400 hover:border-amber-300/60 hover:text-amber-600"
       }`}
     >
       <span

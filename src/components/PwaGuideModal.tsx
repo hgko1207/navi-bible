@@ -105,7 +105,7 @@ export default function PwaGuideModal({ onClose }: PwaGuideModalProps) {
           </h3>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full transition-all active:scale-90"
+            className="flex h-11 w-11 items-center justify-center rounded-full transition-all active:scale-90"
             style={{ background: "var(--badge-bg)" }}
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} style={{ color: "var(--text-tertiary)" }}>
@@ -134,7 +134,7 @@ export default function PwaGuideModal({ onClose }: PwaGuideModalProps) {
             onClick={() => setActiveTab("android")}
             className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-all ${
               activeTab === "android"
-                ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-md"
+                ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-md dark:from-green-700 dark:to-green-800"
                 : ""
             }`}
             style={activeTab !== "android" ? { background: "var(--badge-bg)", color: "var(--text-tertiary)" } : undefined}

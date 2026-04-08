@@ -45,6 +45,7 @@ export default function ProgressPage() {
   const [history, setHistory] = useState<ReadingHistory | null>(null);
   const [bulkDay, setBulkDay] = useState("");
   const [bulkDone, setBulkDone] = useState(false);
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
 
   useEffect(() => {
     syncRoundProgress();
@@ -66,8 +67,8 @@ export default function ProgressPage() {
     setBulkDay("");
   };
 
-  const oldTestament = readings.filter((r) => r.testament === "구약");
-  const newTestament = readings.filter((r) => r.testament === "신약");
+  const oldTestament = useMemo(() => readings.filter((r) => r.testament === "구약"), []);
+  const newTestament = useMemo(() => readings.filter((r) => r.testament === "신약"), []);
 
   const completedOT = oldTestament.filter((r) =>
     progress.completedDays.includes(r.day)
@@ -80,11 +81,14 @@ export default function ProgressPage() {
     totalDays > 0 ? Math.round((completedCount / totalDays) * 100) : 0;
 
   const handleCompleteRound = () => {
-    if (confirm("축하합니다! 완독을 완료하고 새 독서를 시작하시겠습니까?")) {
-      const updated = completeCurrentRound(allDayIds);
-      setHistory(updated);
-      router.refresh();
-    }
+    setShowCompleteConfirm(true);
+  };
+
+  const handleConfirmComplete = () => {
+    const updated = completeCurrentRound(allDayIds);
+    setHistory(updated);
+    setShowCompleteConfirm(false);
+    router.refresh();
   };
 
   const dayGroups = useMemo(() => groupCompletedDays(progress.completedDays), [progress.completedDays]);
@@ -111,8 +115,8 @@ export default function ProgressPage() {
             </div>
             <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/20 backdrop-blur-sm">
               <div
-                className="h-full rounded-full bg-white transition-all duration-700 ease-out"
-                style={{ width: `${percent}%` }}
+                className="h-full w-full origin-left bg-white transition-transform duration-700 ease-out"
+                style={{ transform: `scaleX(${percent / 100})` }}
               />
             </div>
             <p className="mt-2.5 text-[13px] font-medium text-amber-100/90">
@@ -153,6 +157,7 @@ export default function ProgressPage() {
         </p>
         <div className="flex gap-2">
           <input
+            id="bulk-day-input"
             type="text"
             placeholder={`1 ~ ${allDayIds[allDayIds.length - 1]}`}
             value={bulkDay}
@@ -218,8 +223,53 @@ export default function ProgressPage() {
           onClick={handleCompleteRound}
           className="w-full rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 py-4 text-sm font-bold text-white shadow-lg shadow-amber-200/40 transition-all hover:shadow-xl active:scale-[0.98]"
         >
-          🎉 완독! 다음 독서 시작하기
+          완독! 다음 독서 시작하기
         </button>
+      )}
+
+      {/* 완독 확인 모달 */}
+      {showCompleteConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowCompleteConfirm(false)}
+          />
+          <div
+            className="relative mx-auto w-full max-w-lg rounded-t-3xl p-6 sm:rounded-3xl"
+            style={{ background: "var(--bg-card-solid)" }}
+          >
+            <div className="mb-5 flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-md shadow-amber-200/40 dark:shadow-amber-900/40">
+                <svg viewBox="0 0 24 24" className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
+                  {history?.currentRound ?? 1}독 완독을 완료할까요?
+                </h3>
+                <p className="mt-1 text-[13px] leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
+                  완독 기록이 저장되고 진도가 초기화됩니다. 이전 기록은 독서 기록에서 확인할 수 있습니다.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCompleteConfirm(false)}
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl text-sm font-semibold transition-all active:scale-[0.97]"
+                style={{ background: "var(--badge-bg)", color: "var(--text-secondary)" }}
+              >
+                취소
+              </button>
+              <button
+                onClick={handleConfirmComplete}
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-sm font-bold text-white shadow-md shadow-amber-200/30 transition-all active:scale-[0.97] dark:shadow-amber-900/30"
+              >
+                새 독서 시작
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

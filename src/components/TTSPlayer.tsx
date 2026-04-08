@@ -112,7 +112,7 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
         <button
           type="button"
           onClick={handlePlay}
-          className="flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-all hover:text-amber-700 active:scale-95"
+          className="flex min-h-[44px] items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium transition-all hover:text-amber-700 active:scale-95"
           style={{ background: "var(--bg-secondary)", color: "var(--text-secondary)" }}
         >
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
@@ -125,7 +125,7 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
           <button
             type="button"
             onClick={handlePause}
-            className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3.5 py-2 text-xs font-medium text-amber-700 transition-all active:scale-95 dark:bg-amber-900/30 dark:text-amber-400"
+            className="flex min-h-[44px] items-center gap-1.5 rounded-full bg-amber-100 px-3.5 py-2 text-xs font-medium text-amber-700 transition-all active:scale-95 dark:bg-amber-900/30 dark:text-amber-400"
           >
             <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
               <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
@@ -147,7 +147,7 @@ export default function TTSPlayer({ text }: TTSPlayerProps) {
       <button
         type="button"
         onClick={handleRateChange}
-        className="rounded-full border px-2.5 py-1.5 text-[11px] font-semibold transition-colors hover:border-amber-300 hover:text-amber-700"
+        className="flex min-h-[44px] w-[52px] items-center justify-center rounded-full border text-[11px] font-semibold transition-colors hover:border-amber-300 hover:text-amber-700"
         style={{ borderColor: "var(--border-input)", color: "var(--text-tertiary)" }}
       >
         {rate}x

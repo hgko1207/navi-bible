@@ -37,8 +37,8 @@ export default function DaysListPage() {
           <div className="flex items-center gap-2.5">
             <div className="h-3 w-28 overflow-hidden rounded-full bg-stone-100 dark:bg-stone-800">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 transition-all duration-700"
-                style={{ width: `${percent}%` }}
+                className="h-full w-full origin-left bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 transition-transform duration-700"
+                style={{ transform: `scaleX(${percent / 100})` }}
               />
             </div>
             <span className="text-[13px] font-bold text-amber-600 dark:text-amber-400">

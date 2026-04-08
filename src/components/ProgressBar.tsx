@@ -40,8 +40,8 @@ export default function ProgressBar({
       </div>
       <div className={`h-3 overflow-hidden rounded-full ${c.bg}`}>
         <div
-          className={`h-full rounded-full transition-all duration-500 ease-out ${c.fill}`}
-          style={{ width: `${percent}%` }}
+          className={`h-full w-full origin-left transition-transform duration-500 ease-out ${c.fill}`}
+          style={{ transform: `scaleX(${percent / 100})` }}
         />
       </div>
       <p className="text-xs" style={{ color: "var(--text-muted)" }}>

@@ -46,11 +46,11 @@ export default function PwaInstallHint() {
       {show && (
         <div className="fixed bottom-20 left-4 right-4 z-[80] mx-auto max-w-lg animate-[fadeInUp_0.3s_ease-out]">
           <div
-            className="flex items-center gap-3 rounded-2xl p-3.5 shadow-2xl backdrop-blur-xl"
+            className="flex items-center gap-3 rounded-2xl p-3.5 shadow-xl backdrop-blur-xl"
             style={{
               background: "var(--bg-card-solid)",
               border: "1px solid var(--border-color)",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+              boxShadow: undefined,
             }}
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600">
@@ -64,14 +64,14 @@ export default function PwaInstallHint() {
             <div className="flex shrink-0 items-center gap-1.5">
               <button
                 onClick={handleDismiss}
-                className="rounded-lg px-2.5 py-1.5 text-[12px] font-semibold"
+                className="flex min-h-[44px] items-center rounded-lg px-2.5 text-[12px] font-semibold"
                 style={{ color: "var(--text-muted)" }}
               >
                 닫기
               </button>
               <button
                 onClick={handleOpenGuide}
-                className="rounded-lg bg-amber-500 px-3 py-1.5 text-[12px] font-bold text-white shadow-sm"
+                className="flex min-h-[44px] items-center rounded-lg bg-amber-500 px-3 text-[12px] font-bold text-white shadow-sm"
               >
                 방법 보기
               </button>

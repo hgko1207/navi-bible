@@ -49,6 +49,7 @@ export default function YouTubePlayer({
   const [isReady, setIsReady] = useState(false);
   const [hasAutoCompleted, setHasAutoCompleted] = useState(false);
   const wasPlayingBeforeHidden = useRef(false);
+  const lastSaveTimeRef = useRef(0);
 
   const playerId = `yt-player-${day}`;
 
@@ -106,6 +107,15 @@ export default function YouTubePlayer({
             if (event.data === PLAYING) {
               setDuration(event.target.getDuration());
             }
+            // 일시정지 또는 종료 시 즉시 저장
+            if (event.data !== PLAYING) {
+              const t = event.target.getCurrentTime();
+              const d = event.target.getDuration();
+              if (d > 0) {
+                savePlaybackPosition(videoId, t, d);
+                lastSaveTimeRef.current = Date.now();
+              }
+            }
             if (event.data === ENDED) {
               setIsPlaying(false);
               if (!hasAutoCompleted && onComplete) {
@@ -156,8 +166,11 @@ export default function YouTubePlayer({
         const dur = playerRef.current.getDuration();
         setCurrentTime(time);
         setDuration(dur);
-        savePlaybackPosition(videoId, time, dur);
-
+        const now = Date.now();
+        if (now - lastSaveTimeRef.current >= 5000) {
+          savePlaybackPosition(videoId, time, dur);
+          lastSaveTimeRef.current = now;
+        }
       }, 1000);
     } else {
       if (intervalRef.current) {
@@ -177,7 +190,15 @@ export default function YouTubePlayer({
       if (!playerRef.current) return;
 
       if (document.hidden) {
-        // 백그라운드로 전환됨 - 재생 중이었는지 기록
+        // 백그라운드로 전환됨 - 즉시 위치 저장 (앱 종료 대비)
+        const time = playerRef.current.getCurrentTime();
+        const dur = playerRef.current.getDuration();
+        if (dur > 0) {
+          savePlaybackPosition(videoId, time, dur);
+          lastSaveTimeRef.current = Date.now();
+        }
+
+        // 재생 중이었는지 기록
         const state = playerRef.current.getPlayerState();
         wasPlayingBeforeHidden.current = state === PLAYING;
 
@@ -207,7 +228,7 @@ export default function YouTubePlayer({
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, []);
+  }, [videoId]);
 
   // Media Session API - 잠금화면/알림바 컨트롤
   useEffect(() => {
@@ -310,6 +331,33 @@ export default function YouTubePlayer({
     [duration]
   );
 
+  const handleSeekKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!playerRef.current || duration === 0) return;
+      const time = playerRef.current.getCurrentTime();
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const t = Math.max(0, time - 5);
+        playerRef.current.seekTo(t, true);
+        setCurrentTime(t);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const t = Math.min(duration, time + 5);
+        playerRef.current.seekTo(t, true);
+        setCurrentTime(t);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        playerRef.current.seekTo(0, true);
+        setCurrentTime(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        playerRef.current.seekTo(duration, true);
+        setCurrentTime(duration);
+      }
+    },
+    [duration]
+  );
+
   const formatTime = (seconds: number): string => {
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
@@ -331,21 +379,36 @@ export default function YouTubePlayer({
 
       {/* 커스텀 컨트롤 */}
       {isReady && (
-        <div className="rounded-2xl p-3 shadow-sm" style={{ background: "var(--bg-card-solid)" }}>
-          {/* 프로그레스 바 */}
+        <div className="rounded-2xl p-3">
+          {/* 프로그레스 바 — 터치 영역 32px, 시각 높이 8px, 키보드 ←→ 5초 이동 */}
           <div
-            className="group relative h-2 cursor-pointer rounded-full"
-            style={{ background: "var(--border-input)" }}
+            className="group relative -my-3 cursor-pointer rounded py-3 outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-1"
             onClick={handleProgressClick}
+            onKeyDown={handleSeekKeyDown}
+            tabIndex={0}
+            role="slider"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(progressPercent)}
           >
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-600 transition-all"
-              style={{ width: `${progressPercent}%` }}
-            />
+              className="h-2 overflow-hidden rounded-full"
+              style={{ background: "var(--border-input)" }}
+            >
+              <div
+                className="h-full w-full origin-left bg-gradient-to-r from-amber-500 to-amber-600 transition-transform"
+                style={{ transform: `scaleX(${progressPercent / 100})` }}
+              />
+            </div>
             <div
-              className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-amber-500 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
-              style={{ background: "var(--bg-card-solid)", left: `calc(${progressPercent}% - 8px)` }}
-            />
+              className="pointer-events-none absolute inset-y-0 flex items-center opacity-0 transition-opacity group-hover:opacity-100"
+              style={{ left: `calc(${progressPercent}% - 8px)` }}
+            >
+              <div
+                className="h-4 w-4 rounded-full border-2 border-amber-500 shadow-sm"
+                style={{ background: "var(--bg-card-solid)" }}
+              />
+            </div>
           </div>
 
           {/* 시간 표시 */}
@@ -419,7 +482,7 @@ export default function YouTubePlayer({
               <button
                 type="button"
                 onClick={() => setShowSpeedPanel(!showSpeedPanel)}
-                className="min-w-[72px] rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors hover:border-amber-300 hover:text-amber-700"
+                className="flex min-h-[44px] min-w-[72px] items-center justify-center rounded-full border px-3 text-xs font-semibold transition-colors hover:border-amber-300 hover:text-amber-700 dark:hover:border-amber-700 dark:hover:text-amber-400"
                 style={{ borderColor: "var(--border-input)", color: "var(--text-secondary)" }}
               >
                 {playbackRate}x 속도
@@ -445,10 +508,10 @@ export default function YouTubePlayer({
                     type="button"
                     key={rate}
                     onClick={() => handleRateSelect(rate)}
-                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`rounded-full px-3 py-2 text-xs font-medium transition-colors ${
                       rate === playbackRate
                         ? "bg-amber-600 text-white shadow-sm"
-                        : "hover:bg-amber-100 hover:text-amber-700"
+                        : "hover:bg-amber-100 hover:text-amber-700 dark:hover:bg-amber-900/30 dark:hover:text-amber-400"
                     }`}
                     style={rate !== playbackRate ? { color: "var(--text-tertiary)" } : undefined}
                   >

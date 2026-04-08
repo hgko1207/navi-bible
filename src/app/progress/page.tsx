@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { readings } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
 import {
@@ -39,6 +40,7 @@ function groupCompletedDays(
 }
 
 export default function ProgressPage() {
+  const router = useRouter();
   const { progress } = useProgress();
   const [history, setHistory] = useState<ReadingHistory | null>(null);
   const [bulkDay, setBulkDay] = useState("");
@@ -49,7 +51,7 @@ export default function ProgressPage() {
     setHistory(getReadingHistory());
   }, [progress.completedDays.length]);
 
-  const allDayIds = readings.map((r) => r.day);
+  const allDayIds = useMemo(() => readings.map((r) => r.day), []);
   const totalDays = readings.length;
   const completedCount = progress.completedDays.length;
 
@@ -81,11 +83,11 @@ export default function ProgressPage() {
     if (confirm("축하합니다! 완독을 완료하고 새 독서를 시작하시겠습니까?")) {
       const updated = completeCurrentRound(allDayIds);
       setHistory(updated);
-      window.location.reload();
+      router.refresh();
     }
   };
 
-  const dayGroups = groupCompletedDays(progress.completedDays);
+  const dayGroups = useMemo(() => groupCompletedDays(progress.completedDays), [progress.completedDays]);
 
   return (
     <div className="space-y-5">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { readings, getReadingByDay } from "@/data/readings";
@@ -27,7 +27,7 @@ export default function DayDetailPage() {
   const [bulkDone, setBulkDone] = useState(false);
   const [showNextToast, setShowNextToast] = useState(false);
 
-  const allDayIds = readings.map((r) => r.day);
+  const allDayIds = useMemo(() => readings.map((r) => r.day), []);
 
   const handleBulkComplete = useCallback(() => {
     if (reading && readingIdx > 0) {

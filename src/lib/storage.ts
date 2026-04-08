@@ -215,7 +215,7 @@ export function syncRoundProgress(): void {
 
 const SETTINGS_KEY = "navi-bible-settings";
 
-function getDefaultSettings(): AppSettings {
+export function getDefaultSettings(): AppSettings {
   return {
     theme: "system",
     fontSize: "medium",

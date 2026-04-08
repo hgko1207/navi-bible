@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface NextDayToastProps {
@@ -12,6 +12,11 @@ export default function NextDayToast({ nextDay, onDismiss }: NextDayToastProps) 
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [countdown, setCountdown] = useState(8);
+
+  const handleDismiss = useCallback(() => {
+    setVisible(false);
+    setTimeout(onDismiss, 200);
+  }, [onDismiss]);
 
   useEffect(() => {
     // Animate in
@@ -30,13 +35,7 @@ export default function NextDayToast({ nextDay, onDismiss }: NextDayToastProps) 
     }, 1000);
 
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleDismiss = () => {
-    setVisible(false);
-    setTimeout(onDismiss, 200);
-  };
+  }, [handleDismiss]);
 
   const handleGoNext = () => {
     setVisible(false);
@@ -78,7 +77,7 @@ export default function NextDayToast({ nextDay, onDismiss }: NextDayToastProps) 
         <div className="flex items-center gap-2">
           <button
             onClick={handleDismiss}
-            className="rounded-lg px-3 py-2 text-xs font-semibold transition-all active:scale-95"
+            className="flex h-11 min-w-[44px] items-center justify-center rounded-lg px-3 text-xs font-semibold transition-all active:scale-95"
             style={{ color: "var(--text-muted)" }}
           >
             닫기

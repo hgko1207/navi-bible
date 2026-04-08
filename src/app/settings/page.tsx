@@ -131,7 +131,7 @@ export default function SettingsPage() {
         <p className="mb-4 text-[13px]" style={{ color: "var(--text-tertiary)" }}>
           읽기 편한 크기를 선택하세요
         </p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {fontSizeOptions.map((opt) => {
             const isSelected = settings.fontSize === opt.value;
             return (

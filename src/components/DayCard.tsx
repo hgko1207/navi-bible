@@ -24,7 +24,7 @@ export default function DayCard({ reading, completed }: DayCardProps) {
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-bold transition-all ${
             completed
-              ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-200/50 dark:shadow-emerald-900/50"
+              ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-200/50 dark:from-emerald-500 dark:to-emerald-700 dark:shadow-emerald-900/50"
               : "bg-gradient-to-br from-amber-50 to-amber-100 text-amber-700 dark:from-amber-500/20 dark:to-amber-600/20 dark:text-amber-400"
           } ${reading.day.length > 2 ? "text-[12px]" : "text-[15px]"}`}
         >

@@ -11,6 +11,7 @@ import {
 import { AppSettings, ThemeMode, FontSize } from "@/lib/types";
 import {
   getSettings,
+  getDefaultSettings,
   saveSettings,
   updateTheme as storageUpdateTheme,
   updateFontSize as storageUpdateFontSize,
@@ -46,10 +47,15 @@ const FONT_SIZE_MAP: Record<FontSize, string> = {
 };
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<AppSettings>(() => getSettings());
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() =>
-    resolveTheme(settings.theme)
-  );
+  const [settings, setSettings] = useState<AppSettings>(getDefaultSettings);
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+
+  // 클라이언트에서만 실제 localStorage 값으로 초기화
+  useEffect(() => {
+    const loaded = getSettings();
+    setSettings(loaded);
+    setResolvedTheme(resolveTheme(loaded.theme));
+  }, []);
 
   // Apply theme to document
   useEffect(() => {

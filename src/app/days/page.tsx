@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { readings } from "@/data/readings";
 import { useProgress } from "@/hooks/useProgress";
 import DayCard from "@/components/DayCard";
@@ -8,8 +9,8 @@ import SearchBar from "@/components/SearchBar";
 export default function DaysListPage() {
   const { isCompleted, progress } = useProgress();
 
-  const oldTestament = readings.filter((r) => r.testament === "구약");
-  const newTestament = readings.filter((r) => r.testament === "신약");
+  const oldTestament = useMemo(() => readings.filter((r) => r.testament === "구약"), []);
+  const newTestament = useMemo(() => readings.filter((r) => r.testament === "신약"), []);
   const completedCount = progress.completedDays.length;
   const percent = readings.length > 0 ? Math.round((completedCount / readings.length) * 100) : 0;
 

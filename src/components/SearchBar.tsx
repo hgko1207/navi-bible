@@ -63,7 +63,7 @@ export default function SearchBar({ readings, completedDays }: SearchBarProps) {
           <button
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => setQuery("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
+            className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center"
             style={{ color: "var(--text-muted)" }}
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">

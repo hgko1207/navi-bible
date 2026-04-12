@@ -10,7 +10,7 @@ export default function DayCard({ reading, completed }: DayCardProps) {
   const isOT = reading.testament === "구약";
 
   return (
-    <Link href={`/days/${reading.day}`}>
+    <Link href={`/days/${reading.day}`} className="block">
       <div
         className={`flex overflow-hidden rounded-2xl transition-all duration-200 active:scale-[0.98] ${
           completed
@@ -67,7 +67,16 @@ export default function DayCard({ reading, completed }: DayCardProps) {
                 {reading.testament}
               </span>
             </div>
-            <p className="mt-1.5 truncate text-[13px]" style={{ color: "var(--text-muted)" }}>
+            <p
+              className="mt-1.5 overflow-hidden text-[13px]"
+              style={{
+                color: "var(--text-muted)",
+                display: "-webkit-box",
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical",
+                wordBreak: "break-all",
+              }}
+            >
               {reading.bibleRange}
             </p>
           </div>

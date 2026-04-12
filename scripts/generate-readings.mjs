@@ -23,14 +23,22 @@ const NEW_TESTAMENT_BOOKS = [
 ];
 
 function detectTestament(bibleRange) {
-  const trimmed = bibleRange.trim();
+  // bibleRange 안에서 가장 먼저 등장하는 성경책 이름 기준으로 판별
+  // (괄호, 공백 등으로 감싸진 경우도 처리)
   const allBooks = [...OLD_TESTAMENT_BOOKS, ...NEW_TESTAMENT_BOOKS].sort(
     (a, b) => b.length - a.length
   );
+  let earliestIdx = Infinity;
+  let earliestBook = null;
   for (const book of allBooks) {
-    if (trimmed.startsWith(book)) {
-      return NEW_TESTAMENT_BOOKS.includes(book) ? "신약" : "구약";
+    const idx = bibleRange.indexOf(book);
+    if (idx >= 0 && idx < earliestIdx) {
+      earliestIdx = idx;
+      earliestBook = book;
     }
+  }
+  if (earliestBook) {
+    return NEW_TESTAMENT_BOOKS.includes(earliestBook) ? "신약" : "구약";
   }
   return "구약";
 }

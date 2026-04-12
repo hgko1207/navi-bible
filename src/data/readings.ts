@@ -1426,7 +1426,7 @@ https://youtu.be/QOUyxBeaCM8`,
   {
     day: "55A",
     weekday: "수",
-    testament: "구약",
+    testament: "신약",
     bibleRange: "(갈2:11-14), 행15:36-18:17,    (살전1-5장), (살후1-3장), (갈1-6장), 행18:18-22절",
     keyPoints: [],
     content: `<바울의 2차 선교여행과 연결된 데살로니가전후서, 갈라디아서 읽기>
@@ -1447,7 +1447,7 @@ https://youtu.be/QOUyxBeaCM8`,
  ★‘내가 전한 복음만이 진리다. 다른 복음을 전한다면 저주를 받아 마땅하다!’는 진리 앞에서 단호한 입장으로 갈라디아교회에 편지를 씁니다.(갈라디아서 발생)
 
  고린도교회 개척과 1년6개월 사역 중 폭동사건이 발생하여 브리스길라 아굴라와 함께 고린도를 떠납니다. 함께 한 브리스길라와 아굴라는 에베소에 머물고 바울은 예루살렘을 거쳐 안디옥으로 돌아감으로 2차 선교여행이 끝납니다.`,
-    reference: "구약읽기 내비게이션 p289-318",
+    reference: "신약읽기 내비게이션 p289-318",
     youtubeUrl: "https://youtu.be/EZMk75HemN0?feature=shared",
     youtubeId: "EZMk75HemN0",
   },
@@ -1482,7 +1482,7 @@ https://youtu.be/QOUyxBeaCM8`,
   {
     day: "56",
     weekday: "금",
-    testament: "구약",
+    testament: "신약",
     bibleRange: "(고후1-13장), 행20:2b-3a, (롬1-16장)",
     keyPoints: [],
     content: `바울은 눈물로 쓴 편지를 들고 갔던 디도를 마게도냐에서 만나 고린도교회에 많은 문제가 해결되었다는 소식을 듣고 또 편지를 씁니다.(고린도 후서)발생 입니다.

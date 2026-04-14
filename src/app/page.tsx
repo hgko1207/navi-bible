@@ -27,7 +27,7 @@ export default function HomePage() {
   const totalDays = readings.length;
   const prevDay = readingIdx > 0 ? readings[readingIdx - 1] : null;
   const nextDay = readingIdx >= 0 && readingIdx < readings.length - 1 ? readings[readingIdx + 1] : null;
-  const [showNextToast, setShowNextToast] = useState(false);
+  const [toastNextDay, setToastNextDay] = useState<string | null>(null);
 
   const handleAutoComplete = useCallback(() => {
     if (!settings.autoComplete) return;
@@ -36,7 +36,7 @@ export default function HomePage() {
       syncRoundProgress();
       window.dispatchEvent(new Event("storage-update"));
       if (nextDay) {
-        setShowNextToast(true);
+        setToastNextDay(nextDay.day);
       }
     }
   }, [reading.day, isCompleted, nextDay, settings.autoComplete]);
@@ -46,7 +46,7 @@ export default function HomePage() {
     toggle(reading.day);
     // Show toast when marking as complete (not when unchecking)
     if (!wasCompleted && nextDay) {
-      setShowNextToast(true);
+      setToastNextDay(nextDay.day);
     }
   }, [reading.day, isCompleted, toggle, nextDay]);
 
@@ -182,10 +182,10 @@ export default function HomePage() {
       </div>
 
       {/* 다음 일차 이동 토스트 */}
-      {showNextToast && nextDay && (
+      {toastNextDay && (
         <NextDayToast
-          nextDay={nextDay.day}
-          onDismiss={() => setShowNextToast(false)}
+          nextDay={toastNextDay}
+          onDismiss={() => setToastNextDay(null)}
         />
       )}
     </div>
